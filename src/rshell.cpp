@@ -24,6 +24,12 @@ int main() {
 		char ex[5] = {'e','x','i','t','\0'};
 		if (strcmp(argv[0], ex) == 0 && cp.size() == 1) return 0; // EXIT command
 
+		for (int p = 0; p < cp.size(); p++) {
+			for (unsigned int i = 0; i <= strlen(argv[p]); i++) 
+				cerr << "{" << static_cast<int>(argv[p][i]) << "}";
+			cout << endl;
+		}
+
 		int pid = fork();
 		if (pid == -1) {	// Error in fork
 			perror("error in fork");
@@ -40,10 +46,6 @@ int main() {
 		int status = -1;
 		if (-1 == waitpid(pid, &status, 0)) {	// Parent Process
 			perror("error in wait");
-			exit(-1);
-		}
-		if (status != 0) { // Is the child's status in need of perror?
-			cout << "status of command <" << argv[0] << "> : unexpected error" << endl;
 			exit(-1);
 		}
 	}

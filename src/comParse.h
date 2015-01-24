@@ -19,17 +19,13 @@ public:
 
 		typedef tokenizer<char_separator<char> > tokenizer;
 
-		char delim[3] = {' ', '\t', '\0'};
+		char delim[4] = {' ', '\t', '\n', '\0'};
 		char_separator<char> charSep(delim); // should ignore only whitespace
 		tokenizer parse(com, charSep);
 
 		for (tokenizer::iterator it = parse.begin(); it != parse.end(); it++)
 			words.push_back(*it);
 		
-		//char* const argv[] = new char[tokens.size() + 1];
-
-		//for (int i = 0; i < tokens.size(); i++)
-			//argv[i] = tokens.at(i).c_str();
 		for (vector<string>::iterator it = words.begin(); it != words.end(); it++)
 			tokens.push_back( &(it->at(0)) );
 
