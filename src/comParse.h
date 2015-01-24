@@ -31,9 +31,9 @@ public:
 		for (vector<string>::iterator it = words.begin(); 
 				!hashtag && it != words.end(); it++) {
 			size_t a = it->find("#");
+
 			if (a != string::npos) {
 				it->erase(a, string::npos); // Remove all chars from #, onward
-				if (it->size() == 0) cerr << "size of str = 0" << endl;
 
 				// Remove all subsequent words and current word from arg list
 				if (a == 0) words.erase(it, words.end());
