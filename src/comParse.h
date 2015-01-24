@@ -10,17 +10,18 @@ using namespace boost;
 class comParse {
 private:
 	vector<string> words;
-	vector<char*> tokens;
+	vector<vector<char*> > tokens_lines;
 
 public:
-	char** parseLine(string com) {
+	vector<vector<char*> > parseLine(string com) {
 		words.clear(); // Reuse of function requires empty arrays
-		tokens.clear(); // Need for argc int requires keeping array
+		tokens_lines.clear(); // Need for argc int requires keeping array
 
 		typedef tokenizer<char_separator<char> > tokenizer;
 
-		char delim[4] = {' ', '\t', '\n', '\0'};
-		char_separator<char> charSep(delim); // should ignore only whitespace
+		char rm_delim[4] = {' ', '\t', '\n', '\0'},
+			kp_delim[4] = {'&', '|', ';', '\0'};
+		char_separator<char> charSep(rm_delim, kp_delim); // should ignore only whitespace
 		tokenizer parse(com, charSep);
 
 		for (tokenizer::iterator it = parse.begin(); it != parse.end(); it++)
@@ -44,16 +45,20 @@ public:
 			}
 		}
 		
-		for (vector<string>::iterator it = words.begin(); it != words.end(); it++)
-			tokens.push_back( &(it->at(0)) );
+		vector<char*> n;
+		tokens_lines.push_back(n); 	// first command
+		int a = 0;
 
-		char** c_ = tokens.data();
-		c_[tokens.size()] = NULL;
-
-		return c_;
-	}
-	int size() {
-		return tokens.size();
+		for (vector<string>::iterator it = words.begin(); it != words.end(); it++) {
+			if (*it != ";") {	// No semi-colon
+				tokens_lines.at(a).push_back( &(it->at(0)) );
+			} else {		// Semi-colon
+				a++;
+				tokens_lines.push_back(n);
+			}
+		}
+			
+		return tokens_lines;
 	}
 };
 
