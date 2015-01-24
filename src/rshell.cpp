@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <vector>
 #include "comParse.h"
+#include <cstring>
 
 using namespace boost;
 using namespace std;
@@ -21,7 +22,7 @@ int main() {
 		char* const* argv = cp.parseLine(command); // Parse line
 
 		char ex[5] = {'e','x','i','t','\0'};
-		if (argv[0] == ex && cp.size() == 1) return 0;
+		if (strcmp(argv[0], ex) == 0 && cp.size() == 1) return 0; // EXIT command
 
 		int pid = fork();
 		if (pid == -1) {	// Error in fork
@@ -36,8 +37,13 @@ int main() {
 			exit(1); // should never happen, since child should exec
 		} 
 		
-		if (-1 == wait(0)) {	// Parent Process
+		int status = -1;
+		if (-1 == waitpid(pid, &status, 0)) {	// Parent Process
 			perror("error in wait");
+			exit(-1);
+		}
+		if (status != 0) { // Is the child's status in need of perror?
+			cout << "status of command <" << argv[0] << "> : unexpected error" << endl;
 			exit(-1);
 		}
 	}
