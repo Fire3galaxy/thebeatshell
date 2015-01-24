@@ -29,7 +29,10 @@ public:
 		for (vector<string>::iterator it = words.begin(); it != words.end(); it++)
 			tokens.push_back( &(it->at(0)) );
 
-		return tokens.data();
+		char** c_ = tokens.data();
+		c_[tokens.size()] = NULL;
+
+		return c_;
 	}
 	int size() {
 		return tokens.size();
