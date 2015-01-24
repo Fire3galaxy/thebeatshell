@@ -13,7 +13,7 @@ private:
 	vector<vector<char*> > tokens_lines;
 
 public:
-	vector<vector<char*> > parseLine(string com) {
+	vector<char**> parseLine(string com) {
 		words.clear(); // Reuse of function requires empty arrays
 		tokens_lines.clear(); // Need for argc int requires keeping array
 
@@ -45,20 +45,29 @@ public:
 			}
 		}
 		
+		
 		vector<char*> n;
-		tokens_lines.push_back(n); 	// first command
-		int a = 0;
-
-		char** c_ = NULL;
-		if (!tokens.empty()) { // convert vec <char*> to char** array
-			c_ = tokens.data();
-			c_[tokens.size()] = NULL; // issue with data() return because it doesn't null delimit well.
+		for (vector<string>::iterator it = words.begin(); it != words.end(); it++) {
+			if (it->at(0) != ';') {
+				n.push_back(&it->at(0));
+			} else {
+				tokens_lines.push_back(n);
+				n.clear();
+			}
 		}
 
-		return c_;
-	}
-	int size() {
-		return tokens.size();
+		vector<char**> commands; // Due to parsing format, statements like
+		for (vector< vector<char*> >::iterator it = tokens_lines.begin();
+				it != tokens_lines.end(); it++) {
+			char** c_ = NULL;
+			if (!(it->empty())) { // convert vec <char*> to char** array
+				c_ = it->data();
+				c_[it->size()] = NULL; // issue with data() return because it doesn't null delimit well.
+				commands.push_back(c_);
+			}
+		}
+		
+		return commands;
 	}
 };
 
