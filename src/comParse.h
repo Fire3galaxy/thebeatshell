@@ -25,6 +25,24 @@ public:
 
 		for (tokenizer::iterator it = parse.begin(); it != parse.end(); it++)
 			words.push_back(*it);
+
+		bool hashtag = false;
+		// COMMENTS, if string has hashtag, remove everything else
+		for (vector<string>::iterator it = words.begin(); 
+				!hashtag && it != words.end(); it++) {
+			size_t a = it->find("#");
+			if (a != string::npos) {
+				it->erase(a, string::npos); // Remove all chars from #, onward
+				if (it->size() == 0) cerr << "size of str = 0" << endl;
+
+				// Remove all subsequent words and current word from arg list
+				if (a == 0) words.erase(it, words.end());
+				// Remove all subsequent words
+				else words.erase(it + 1, words.end());
+
+				hashtag = true;
+			}
+		}
 		
 		for (vector<string>::iterator it = words.begin(); it != words.end(); it++)
 			tokens.push_back( &(it->at(0)) );

@@ -7,12 +7,20 @@
 #include <vector>
 #include "comParse.h"
 #include <cstring>
+#include <unistd.h>
 
 using namespace boost;
 using namespace std;
 
 int main() {
 	while (true) {
+		char* login = getlogin();
+		char* hostname = NULL;
+		gethostname(hostname, strlen(hostname));
+
+		if (login != NULL && hostname != NULL) cerr << login << "@" << hostname;
+		else if (login != NULL) cerr << login;
+		else if (hostname != NULL) cerr << hostname;
 		cerr << "$ " << flush;
 		
 		string command = "";
@@ -23,8 +31,6 @@ int main() {
 
 		char ex[5] = {'e','x','i','t','\0'};
 		if (strcmp(argv[0], ex) == 0 && cp.size() == 1) return 0; // EXIT command
-
-		cout << argv[0] << argv[1] << endl;
 
 		int pid = fork();
 		if (pid == -1) {	// Error in fork
