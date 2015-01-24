@@ -37,14 +37,6 @@ int main() {
 				perror("error in execvp");
 				exit(-1);
 			}
-
-			exit(1); // should never happen, since child should exec
-		} 
-		
-		int status = -1;
-		if (-1 == waitpid(pid, &status, 0)) {	// Parent Process
-			perror("error in wait");
-			exit(-1);
 		}
 	}
 
