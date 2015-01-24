@@ -1,25 +1,19 @@
 #include <iostream>
 #include <unistd.h>
-#include <boost/tokenizer.hpp>
-#include <iterator>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <stdio.h>
+#include <errno.h>
+#include <vector>
+#include "comParse.h"
 
 using namespace boost;
 using namespace std;
 
 int main() {
-	std::cout << "$";
-	std::string command;
-	getline(std::cin, command);
-	
-	boost::tokenizer<> tok(command);
-	tokenizer<>::iterator first = tok.begin(), second = tok.begin(), last = tok.end();
-	second++;
+	string command = "";
+	getline(cin, command);
 
-	// exit, needs to account for commenting
-	if (second == last && *first == "exit") // Only one wrod in string
-		return 0;
-	
-	cout << "it did not exit" << endl;
-
-	return -1;
+	comParse cp;
 }
+

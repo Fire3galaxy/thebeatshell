@@ -1,5 +1,5 @@
 VPATH = src
-CPPFLAGS = -ansi -pedantic -Wall -Werror
+CXXFLAGS = -ansi -pedantic -Wall -Werror
 objects = rshell.o
 
 all: $(objects) | bin
@@ -10,7 +10,7 @@ rshell: $(objects) | bin
 	g++ -o rshell $(objects)
 	mv rshell bin
 
-rshell.o:
+rshell.o: comParse.h
 
 bin:
 	mkdir bin
