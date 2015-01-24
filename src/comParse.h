@@ -36,7 +36,7 @@ public:
 				it->erase(a, string::npos); // Remove all chars from #, onward
 
 				// Remove all subsequent words and current word from arg list
-				if (a == 0) words.erase(it, words.end());
+				if (a == 0 && !words.empty()) words.erase(it, words.end());
 				// Remove all subsequent words
 				else words.erase(it + 1, words.end());
 

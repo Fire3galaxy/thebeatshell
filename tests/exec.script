@@ -1,0 +1,60 @@
+Script started on Sat 24 Jan 2015 12:00:57 AM PST
+~
+dhand002@hammer $ exit./bin/rshell[8Pmake cleanls[Kcd CS100/firstrepo/rshell/[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[Kcd CS100/firstrepo/rshell/
+~/CS100/firstrepo/rshell
+dhand002@hammer $ make clean
+rm -fr rshell *.o bin
+~/CS100/firstrepo/rshell
+dhand002@hammer $ make
+g++ -ansi -pedantic -Wall -Werror   -c -o rshell.o src/rshell.cpp
+mkdir bin
+g++ -o rshell rshell.o
+mv rshell bin
+~/CS100/firstrepo/rshell
+dhand002@hammer $ ./bin/rshell
+$ exit    ls -a    #program
+bin  ex1.cpp  exec.script  Makefile  README.md	rshell.o  src  tests
+$ ls -arta    #basic parsing
+.  ..  bin  ex1.cpp  exec.script  .git	Makefile  README.md  rshell.o  src  tests  .vimrc
+$ ls -artatratratrarartararararatrarararra #ba  parsing with long string
+..  ex1.cpp  README.md	.vimrc	Makefile  tests  .git  src  exec.script  rshell.o  bin	.
+$ ls -aratratratratratratrararatratratratratratr atratr      -artatratratratratrarartatratratrtratratratratratra -rtartatratratratrtartratratrartratr -tarrartartatrtartratratrartatr #     -artartatratr ca  #can handle long strings        , many str     strings
+..  ex1.cpp  README.md	.vimrc	Makefile  tests  .git  src  exec.script  rshell.o  bin	.
+$ ls -trarf;sgjpei4ivnhsfhgovbshrendkjlhf -kjlshog irancehjaklf hdsahljk #c                                                                         ls ls ls ls ls ls ls #d can handle errors without bra eaking
+ls: cannot access ls: No such file or directory
+ls: cannot access ls: No such file or directory
+ls: cannot access ls: No such file or directory
+ls: cannot access ls: No such file or directory
+ls: cannot access ls: No such file or directory
+ls: cannot access ls: No such file or directory
+$ fjapeoivnjfjdklhgois ls #can handle no command error
+error in execvp: No such file or directory
+$ ls						#tabs after
+bin  ex1.cpp  exec.script  Makefile  README.md	rshell.o  src  tests
+$ 					ls #tabs before
+bin  ex1.cpp  exec.script  Makefile  README.md	rshell.o  src  tests
+$                pwd #t spaces before
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+$ pwd                              #spaced s afterward
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+$ ls#                    comments should work still     wil spaces        th spaces
+bin  ex1.cpp  exec.script  Makefile  README.md	rshell.o  src  tests
+$ 
+Segmentation fault
+~/CS100/firstrepo/rshell
+dhand002@hammer $ ./bin/rshell #known s[Kissue, segfault at empty input
+$                                 #space     empty, b spaces
+Segmentation fault
+~/CS100/firstrepo/rshell
+dhand002@hammer $ #known issue, s[Kempty command segfaults
+~/CS100/firstrepo/rshell
+dhand002@hammer $ ./bin/rshell
+$ true
+$ ex  #more tests           exit #tes   exit works
+~/CS100/firstrepo/rshell
+dhand002@hammer $ $[K#more tests l[Kwhen connectors available
+~/CS100/firstrepo/rshell
+dhand002@hammer $ exit
+exit
+
+Script done on Sat 24 Jan 2015 12:07:57 AM PST
