@@ -1,1 +1,4 @@
-README file is currently in progress, return here later.
+#RShell-Current issues
+
+*Connectors not set up
+*empty input causes segfaults
