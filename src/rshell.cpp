@@ -14,13 +14,6 @@ using namespace std;
 
 int main() {
 	while (true) {
-		char* login = getlogin();
-		char* hostname = NULL;
-		gethostname(hostname, strlen(hostname));
-
-		if (login != NULL && hostname != NULL) cerr << login << "@" << hostname;
-		else if (login != NULL) cerr << login;
-		else if (hostname != NULL) cerr << hostname;
 		cerr << "$ " << flush;
 		
 		string command = "";
