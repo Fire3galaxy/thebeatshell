@@ -14,13 +14,16 @@ using namespace std;
 
 int main() {
 	while (true) {
-		cerr << "$ " << flush;
-		
-		string command = "";
-		getline(cin, command);	// Get command
-
+		char* const* argv = NULL;
 		comParse cp;
-		char* const* argv = cp.parseLine(command); // Parse line
+		do {
+			cerr << "$ " << flush;
+			
+			string command = "";
+			getline(cin, command);	// Get command
+
+			argv = cp.parseLine(command); // Parse line
+		} while (argv == NULL); // if empty line, repeat req for command
 
 		char ex[5] = {'e','x','i','t','\0'};
 		if (strcmp(argv[0], ex) == 0 && cp.size() == 1) return 0; // EXIT command

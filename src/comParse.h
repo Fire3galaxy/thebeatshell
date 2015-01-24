@@ -47,8 +47,11 @@ public:
 		for (vector<string>::iterator it = words.begin(); it != words.end(); it++)
 			tokens.push_back( &(it->at(0)) );
 
-		char** c_ = tokens.data();
-		c_[tokens.size()] = NULL;
+		char** c_ = NULL;
+		if (!tokens.empty()) { // convert vec <char*> to char** array
+			c_ = tokens.data();
+			c_[tokens.size()] = NULL; // issue with data() return because it doesn't null delimit well.
+		}
 
 		return c_;
 	}
