@@ -12,3 +12,4 @@ syntax enable
 
 set incsearch
 set background=light
+let @/ = ""

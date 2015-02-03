@@ -22,7 +22,7 @@ int main() {
 			string command = "";
 			getline(cin, command);	// Get command
 
-			argv = cp.parseLine(command); // Parse line
+			argv = cp.parseLine(command);
 		} while (argv == NULL); // if empty line, repeat req for command
 
 		char ex[5] = {'e','x','i','t','\0'};
