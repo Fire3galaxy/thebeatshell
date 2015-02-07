@@ -8,6 +8,8 @@
 #include <string.h>
 #include <vector>
 
+#include "ls.h"
+
 /*
  * This is a BARE BONES example of how to use opendir/readdir/closedir.  Notice
  * that there is no error checking on these functions.  You MUST add error 
@@ -26,7 +28,7 @@ int main(int argc, char** argv)
 	}
 	dirent *direntp;
 	errno = 0;
-	std::vector<char[]> files;
+	std::vector<char*> files;
 	while ((direntp = readdir(dirp))) {
 		if (direntp == NULL && errno != 0) {
 			perror("readdir");
@@ -36,9 +38,12 @@ int main(int argc, char** argv)
 		bool equalsDOT = strncmp(direntp->d_name, ".", 1) ? false : true; 
 		bool equalsDOTDOT = strcmp(direntp->d_name, "..") ? false : true; 
 		if (! IGNORE_DOT_AND_DOTDOT || 
-				(!equalsDOT  && !equalsDOTDOT ))
-			std::cout << direntp->d_name << std::endl;  // use stat here to find attributes of file
+				(!equalsDOT  && !equalsDOTDOT )) {
+			// use stat here to find attributes of file
+			files.push_back(direntp->d_name);
+		}
 	}
+	find_column_size();
 	if (-1 == (closedir(dirp))) {
 		perror("closedir");
 		exit(-1);
