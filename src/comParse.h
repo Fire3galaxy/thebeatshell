@@ -48,11 +48,16 @@ public:
 		
 		vector<char*> n;
 		for (vector<string>::iterator it = words.begin(); it != words.end(); it++) {
-			if (it->at(0) != ';') {
+			size_t semicolon = it->find(";");
+			if (semicolon != string::npos) {
 				n.push_back(&it->at(0));
 			} else {
-				tokens_lines.push_back(n);
-				n.clear();
+				while (semicolon != string::npos) {
+					string s1 = it->substr(0, semicolon); // replace curr word of iterator with s1, then put s2 in new vector. Repeat this if more than 1 semicolon.
+					string s2 = it->substr(semicolon, it->size() - semicolon);
+					tokens_lines.push_back(n);
+					n.clear();
+				}
 			}
 		}
 
