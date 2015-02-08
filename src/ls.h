@@ -17,9 +17,20 @@
 
 void print_many_per_lines(std::vector<char*> files);
 int get_columns_num();
+bool cstringNoCase(char* a, char* b) { // for sort function. Ignore case.
+	return strcasecmp(a, b) <= 0;
+}
+
+void print_test(std::vector<char*> files) {
+	std::sort(files.begin(), files.end(), cstringNoCase); // Alphabetical, ignore case
+
+	for (std::vector<char*>::iterator it = files.begin(); it != files.end();
+			it++)
+		std::cout << *it << std::endl;
+}
 
 void print_many_per_line(std::vector<char*> files) {
-	std::sort(files.begin(), files.end()); // Alphabetical
+	std::sort(files.begin(), files.end(), cstringNoCase); // Alphabetical, ignore case
 
 	// learned from GNU (lab3) ls command, need at least 1 column,
 	// need additional row if file.size / num_columns has remainder
@@ -38,7 +49,7 @@ void print_many_per_line(std::vector<char*> files) {
 		// try again
 		foundROWbyCOLUMN = true; 
 		// if column and row are reset, reset the width vector too
-		columnMaxWidth.clear();
+		columnMaxWidth.assign(num_columns, 0);
 
 		// count how many chars per row, compare to possible amount.
 		// i -> goes through rows
@@ -48,25 +59,22 @@ void print_many_per_line(std::vector<char*> files) {
 
 		for (i = 0; i < num_rows; i++) {
 			int lineLength = 0;
-			for (j = 0, k = i; j < num_columns && k < files.size(); 
-					j++, k += num_rows) {
+			for (j = 0, k = i; j < num_columns && k < files.size() 
+					&& lineLength <= charLineCount; j++, k += num_rows) {
 				//length of lines in chars
-				lineLength += strlen(files.at(j)); 
+				lineLength += strlen(files.at(k)); 
 
 				// record widths of columns based on longest file name
-				if (strlen(files.at(j)) > columnMaxWidth.at(i))
-					columnMaxWidth.at(i) = strlen(files.at(j));
+				if (strlen(files.at(k)) > columnMaxWidth.at(j))
+					columnMaxWidth.at(j) = strlen(files.at(k));
 
 				// space in between file names
-				if (j != num_columns - 1) {
-					lineLength += 1; 
-					(columnMaxWidth.at(i) ) ++;
-				}
+				if (j != num_columns - 1) lineLength += 1; 
 			}
 			// File names too long for curr column count, loop again with 
 			// diff column and row count
 			if (lineLength > charLineCount) {  // Risk of being really inefficient. 
-				num_columns -= 1;
+				num_columns = j - 1;
 				num_rows = files.size() / num_columns + 
 					(files.size() % num_columns ? 1 : 0);
 				foundROWbyCOLUMN = false;
@@ -74,17 +82,18 @@ void print_many_per_line(std::vector<char*> files) {
 			}
 		}
 	}
-	
-	int k = 0; // for column width
-	for (unsigned int i = 0; i < num_rows; i++) {
-		for (unsigned int j = i ; j < num_columns && j < files.size(); j += num_rows) {
-			std::cout << std::setw( columnMaxWidth.at(k) ); // diff column, diff width
-			std::cout << files.at(j); // files + ' ' considered in columnsMaxWidth
 
-			k++;
+	assert(num_rows == 1);
+	std::cerr << num_columns << std::endl;
+	
+	unsigned int i = 0, j = 0, k = 0; // for column width
+	for (i = 0; i < num_rows; i++) {
+		for (j = 0, k = i ; j < num_columns && k < files.size(); j++, k += num_rows) {
+			int columnWidth = columnMaxWidth.at(j) + (j != num_columns ? 1 : 0);
+			std::cout << std::setw(columnWidth); // diff column, diff width
+			std::cout << files.at(k); // files + ' ' considered in columnsMaxWidth
 		}
 		std::cout << std::endl;
-		k = 0;
 	}
 
 	return;
