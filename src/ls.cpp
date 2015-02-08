@@ -43,7 +43,9 @@ int main(int argc, char** argv)
 			files.push_back(direntp->d_name);
 		}
 	}
-	find_column_size();
+
+	print_many_per_line(files);
+
 	if (-1 == (closedir(dirp))) {
 		perror("closedir");
 		exit(-1);

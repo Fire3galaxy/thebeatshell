@@ -17,7 +17,7 @@ ls: ls.o | bin
 	g++ $(CXXFLAGS) -o ls ls.o
 	mv ls bin
 
-ls.o: 
+ls.o: ls.h
 
 bin:
 	mkdir bin
