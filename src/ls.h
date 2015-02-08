@@ -12,7 +12,7 @@
 #include <assert.h>
 #include <iomanip>
 
-#define MIN_COLUMN_WIDTH 3 // Learned from GNU: .. and space b/w columns
+#define MIN_COLUMN_WIDTH 3 // Learned from GNU: . and 2 spaces b/w columns
 #define MAX(arg1, arg2) arg1 > arg2 ? arg1 : arg2
 
 void print_many_per_lines(std::vector<char*> files);
@@ -69,12 +69,17 @@ void print_many_per_line(std::vector<char*> files) {
 					columnMaxWidth.at(j) = strlen(files.at(k));
 
 				// space in between file names
-				if (j != num_columns - 1) lineLength += 1; 
+				if (j != num_columns - 1) lineLength += 2; 
 			}
+			
+			// If too many columns in initial guess (extremely likely)
+			// and only need 1 row, set num_columns to j
+			if (j < num_columns) num_columns = j;
+
 			// File names too long for curr column count, loop again with 
 			// diff column and row count
 			if (lineLength > charLineCount) {  // Risk of being really inefficient. 
-				num_columns = j - 1;
+				num_columns--;
 				num_rows = files.size() / num_columns + 
 					(files.size() % num_columns ? 1 : 0);
 				foundROWbyCOLUMN = false;
@@ -82,14 +87,13 @@ void print_many_per_line(std::vector<char*> files) {
 			}
 		}
 	}
-
-	assert(num_rows == 1);
-	std::cerr << num_columns << std::endl;
 	
 	unsigned int i = 0, j = 0, k = 0; // for column width
+	std::cout << std::left; 
+
 	for (i = 0; i < num_rows; i++) {
 		for (j = 0, k = i ; j < num_columns && k < files.size(); j++, k += num_rows) {
-			int columnWidth = columnMaxWidth.at(j) + (j != num_columns ? 1 : 0);
+			int columnWidth = columnMaxWidth.at(j) + (j != num_columns ? 2 : 0);
 			std::cout << std::setw(columnWidth); // diff column, diff width
 			std::cout << files.at(k); // files + ' ' considered in columnsMaxWidth
 		}

@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 {
 	bool IGNORE_DOT_AND_DOTDOT = true; // set to false for -a
 
-	char dirName[] = ".";
+	char* dirName = argv[1];
 	DIR *dirp = opendir(dirName);
 	if (dirp == NULL) {
 		perror("opendir");
