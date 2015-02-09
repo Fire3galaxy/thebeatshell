@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
 #include <iostream>
 #include <string.h>
@@ -15,11 +18,22 @@
 
 #define MIN_COLUMN_WIDTH 3 // Learned from GNU: . and 2 spaces b/w columns
 #define MAX(arg1, arg2) arg1 > arg2 ? arg1 : arg2
+#define MANY_PER_LINE 0
+#define LONG_FORM 1
+#define permis(filedeets, right, c) if ( (filedeets & right) != 0) putchar(c); \
+	else putchar('-')
 
-void print_many_per_lines(std::vector<char*> files);
+void print_files(std::vector<char*> files, int format);
+void print_many_per_line(std::vector<char*> files);
+void print_long_format(std::vector<char*> files);
 int get_columns_num();
 bool cstringLS_cmp(char* a, char* b);
 int indexFirstCharOfName(char* s);
+
+void print_files(std::vector<char*> files, int format) {
+	if (format == MANY_PER_LINE) print_many_per_line(files);
+	else if (format == LONG_FORM) print_long_format(files);
+}
 	
 bool cstringLS_cmp(char* a, char* b) { // for sort function. Ignore case.
 	return strcasecmp(a + indexFirstCharOfName(a), b + indexFirstCharOfName(b)) <= 0;
@@ -115,6 +129,28 @@ void print_many_per_line(std::vector<char*> files) {
 	}
 
 	return;
+}
+
+void print_long_format(std::vector<char*> files) {
+	std::sort(files.begin(), files.end(), cstringLS_cmp); // Alphabetical, ignore case
+
+	struct stat file_details;
+	
+	if (-1 == stat(files.at(0), &file_details)) {
+		perror("stat");
+		exit(-1);
+	}
+
+	permis(file_details.st_mode, S_IFDIR, 'd');
+	permis(file_details.st_mode, S_IRUSR, 'r');
+	permis(file_details.st_mode, S_IWUSR, 'w');
+	permis(file_details.st_mode, S_IXUSR, 'x');
+	permis(file_details.st_mode, S_IRGRP, 'r');
+	permis(file_details.st_mode, S_IWGRP, 'w');
+	permis(file_details.st_mode, S_IXGRP, 'x');
+	permis(file_details.st_mode, S_IROTH, 'r');
+	permis(file_details.st_mode, S_IWOTH, 'w');
+	permis(file_details.st_mode, S_IXOTH, 'x');
 }
 
 int get_columns_num() {

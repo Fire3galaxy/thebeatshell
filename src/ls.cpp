@@ -16,6 +16,9 @@
  * checking yourself.
  */
 
+#define MANY_PER_LINE 0
+#define LONG_FORM 1
+
 struct FLAGS {
 	bool IGNORE_DOT_AND_DOTDOT;
 };
@@ -53,9 +56,9 @@ int main(int argc, char** argv)
 
 		if (direc.size() > 1) { // Multiple directories -> output names too
 			std::cout << dirName << ":" << std::endl;
-			print_many_per_line(files);
+			print_files(files, MANY_PER_LINE);
 			if (i < direc.size() - 1) std::cout << '\n'; // give newline if not last dir
-		} else print_many_per_line(files);
+		} else print_files(files, LONG_FORM);
 
 		if (-1 == (closedir(dirp))) {
 			perror("closedir");
