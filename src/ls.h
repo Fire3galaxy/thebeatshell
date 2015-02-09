@@ -18,6 +18,7 @@
 #include <assert.h>
 #include <iomanip>
 #include <ctype.h>
+#include <sstream>
 
 #define MIN_COLUMN_WIDTH 3 // Learned from GNU: . and 2 spaces b/w columns
 #define MAX(arg1, arg2) arg1 > arg2 ? arg1 : arg2
@@ -137,10 +138,26 @@ void print_many_per_line(std::vector<char*> files) {
 void print_long_format(std::vector<char*> files) {
 	std::sort(files.begin(), files.end(), cstringLS_cmp); // Alphabetical, ignore case
 
+	std::ostringstream oss;
+
 	struct stat file_details;
 	struct passwd* user;
 	struct group* grp;
 	struct tm* timeMod;
+
+	long bitsizeWidth = 0;
+	for (unsigned int i = 0; i < files.size(); i++) {
+		if (-1 == stat(files.at(i), &file_details)) {
+			perror("stat");
+			exit(-1);
+		}
+
+		if (bitsizeWidth < file_details.st_size) {
+			oss << file_details.st_size;
+			bitsizeWidth = oss.str().size();
+			oss.str("");
+		}
+	}
 	
 	for (unsigned int i = 0; i < files.size(); i++) {
 		if (-1 == stat(files.at(i), &file_details)) {
@@ -171,14 +188,14 @@ void print_long_format(std::vector<char*> files) {
 		}
 		std::cout << ' ' << grp->gr_name; // group's username
 
-		std::cout << ' ' << file_details.st_size; // bit size
+		std::cout << ' ' << std::setw(bitsizeWidth) << file_details.st_size; // bit size
 
 		timeMod = localtime(&file_details.st_mtime); // last modified time
 		char timeString[80];
 		strftime(timeString, sizeof(timeString), "%b %e %R", timeMod);
 		std::cout << ' ' << timeString;
 		
-		std::cout << ' ' << files.at(0) << std::endl;
+		std::cout << ' ' << files.at(i) << std::endl;
 	}
 }
 
