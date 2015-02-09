@@ -11,18 +11,30 @@
 #include <algorithm>
 #include <assert.h>
 #include <iomanip>
+#include <ctype.h>
 
 #define MIN_COLUMN_WIDTH 3 // Learned from GNU: . and 2 spaces b/w columns
 #define MAX(arg1, arg2) arg1 > arg2 ? arg1 : arg2
 
 void print_many_per_lines(std::vector<char*> files);
 int get_columns_num();
-bool cstringNoCase(char* a, char* b) { // for sort function. Ignore case.
-	return strcasecmp(a, b) <= 0;
+bool cstringLS_cmp(char* a, char* b);
+int indexFirstCharOfName(char* s);
+	
+bool cstringLS_cmp(char* a, char* b) { // for sort function. Ignore case.
+	return strcasecmp(a + indexFirstCharOfName(a), b + indexFirstCharOfName(b)) <= 0;
+}
+
+// If file starts with ..<NAME>, sort by name, not by dots
+int indexFirstCharOfName(char* s) {
+	for (unsigned int i = 0; i < strlen(s); i++) 
+		if (s[i] != '.') return i;
+
+	return 0;
 }
 
 void print_test(std::vector<char*> files) {
-	std::sort(files.begin(), files.end(), cstringNoCase); // Alphabetical, ignore case
+	std::sort(files.begin(), files.end(), cstringLS_cmp); // Alphabetical, ignore case
 
 	for (std::vector<char*>::iterator it = files.begin(); it != files.end();
 			it++)
@@ -30,7 +42,7 @@ void print_test(std::vector<char*> files) {
 }
 
 void print_many_per_line(std::vector<char*> files) {
-	std::sort(files.begin(), files.end(), cstringNoCase); // Alphabetical, ignore case
+	std::sort(files.begin(), files.end(), cstringLS_cmp); // Alphabetical, ignore case
 
 	// learned from GNU (lab3) ls command, need at least 1 column,
 	// need additional row if file.size / num_columns has remainder
