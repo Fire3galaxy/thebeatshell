@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <pwd.h>
 #include <grp.h>
+#include <time.h>
 
 #include <iostream>
 #include <string.h>
@@ -139,41 +140,46 @@ void print_long_format(std::vector<char*> files) {
 	struct stat file_details;
 	struct passwd* user;
 	struct group* grp;
-	//struct tm* timeMod;
+	struct tm* timeMod;
 	
-	if (-1 == stat(files.at(0), &file_details)) {
-		perror("stat");
-		exit(-1);
+	for (unsigned int i = 0; i < files.size(); i++) {
+		if (-1 == stat(files.at(i), &file_details)) {
+			perror("stat");
+			exit(-1);
+		}
+
+		permis(file_details.st_mode, S_IFDIR, 'd');
+		permis(file_details.st_mode, S_IRUSR, 'r');
+		permis(file_details.st_mode, S_IWUSR, 'w');
+		permis(file_details.st_mode, S_IXUSR, 'x');
+		permis(file_details.st_mode, S_IRGRP, 'r');
+		permis(file_details.st_mode, S_IWGRP, 'w');
+		permis(file_details.st_mode, S_IXGRP, 'x');
+		permis(file_details.st_mode, S_IROTH, 'r');
+		permis(file_details.st_mode, S_IWOTH, 'w');
+		permis(file_details.st_mode, S_IXOTH, 'x');
+
+		if (NULL == (user = getpwuid( file_details.st_uid ))) {
+			perror("ls.h- getpwuid");
+			exit(-1);
+		}
+		std::cout << ' ' << user->pw_name; // owner's username
+
+		if (NULL == (grp = getgrgid( file_details.st_gid ))) {
+			perror("ls.h- getgrgid");
+			exit(-1);
+		}
+		std::cout << ' ' << grp->gr_name; // group's username
+
+		std::cout << ' ' << file_details.st_size; // bit size
+
+		timeMod = localtime(&file_details.st_mtime); // last modified time
+		char timeString[80];
+		strftime(timeString, sizeof(timeString), "%b %e %R", timeMod);
+		std::cout << ' ' << timeString;
+		
+		std::cout << ' ' << files.at(0) << std::endl;
 	}
-
-	permis(file_details.st_mode, S_IFDIR, 'd');
-	permis(file_details.st_mode, S_IRUSR, 'r');
-	permis(file_details.st_mode, S_IWUSR, 'w');
-	permis(file_details.st_mode, S_IXUSR, 'x');
-	permis(file_details.st_mode, S_IRGRP, 'r');
-	permis(file_details.st_mode, S_IWGRP, 'w');
-	permis(file_details.st_mode, S_IXGRP, 'x');
-	permis(file_details.st_mode, S_IROTH, 'r');
-	permis(file_details.st_mode, S_IWOTH, 'w');
-	permis(file_details.st_mode, S_IXOTH, 'x');
-
-	if (NULL == (user = getpwuid( file_details.st_uid ))) {
-		perror("ls.h- getpwuid");
-		exit(-1);
-	}
-	std::cout << ' ' << user->pw_name; // owner's username
-
-	if (NULL == (grp = getgrgid( file_details.st_gid ))) {
-		perror("ls.h- getgrgid");
-		exit(-1);
-	}
-	std::cout << ' ' << grp->gr_name; // group's username
-
-	std::cout << ' ' << file_details.st_size; // bit size
-
-	
-	
-	std::cout << ' ' << files.at(0) << std::endl;
 }
 
 int get_columns_num() {
