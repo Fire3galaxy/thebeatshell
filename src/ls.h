@@ -8,6 +8,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <pwd.h>
+#include <grp.h>
 
 #include <iostream>
 #include <string.h>
@@ -135,6 +137,9 @@ void print_long_format(std::vector<char*> files) {
 	std::sort(files.begin(), files.end(), cstringLS_cmp); // Alphabetical, ignore case
 
 	struct stat file_details;
+	struct passwd* user;
+	struct group* grp;
+	struct tm* timeMod;
 	
 	if (-1 == stat(files.at(0), &file_details)) {
 		perror("stat");
@@ -151,6 +156,24 @@ void print_long_format(std::vector<char*> files) {
 	permis(file_details.st_mode, S_IROTH, 'r');
 	permis(file_details.st_mode, S_IWOTH, 'w');
 	permis(file_details.st_mode, S_IXOTH, 'x');
+
+	if (NULL == (user = getpwuid( file_details.st_uid ))) {
+		perror("ls.h- getpwuid");
+		exit(-1);
+	}
+	std::cout << ' ' << user->pw_name; // owner's username
+
+	if (NULL == (grp = getgrgid( file_details.st_gid ))) {
+		perror("ls.h- getgrgid");
+		exit(-1);
+	}
+	std::cout << ' ' << grp->gr_name; // group's username
+
+	std::cout << ' ' << file_details.st_size; // bit size
+
+	
+	
+	std::cout << ' ' << files.at(0) << std::endl;
 }
 
 int get_columns_num() {
