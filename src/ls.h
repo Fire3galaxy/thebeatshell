@@ -30,6 +30,7 @@
 void print_files(std::vector<char*> files, int format);
 void print_many_per_line(std::vector<char*> files);
 void print_long_format(std::vector<char*> files);
+void print_recursive(std::vector<char*> files); // FIXME
 int get_columns_num();
 bool cstringLS_cmp(char* a, char* b);
 int indexFirstCharOfName(char* s);
