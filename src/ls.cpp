@@ -16,19 +16,26 @@
  * checking yourself.
  */
 
-bool IGNORE_DOT_AND_DOTDOT;
+struct FLAGS {
+	bool IGNORE_DOT_AND_DOTDOT;
+};
+
+FLAGS all_flags;
 
 void determine_arguments(int argc, char** argv, std::vector<char*>& direc, std::vector<char>& flags);
 std::vector<char*> getFilesFromDirectory(DIR* dirp);
+void scanFlags(const std::vector<char>& flags);
 
 int main(int argc, char** argv)
 {
-	IGNORE_DOT_AND_DOTDOT = true; // set to false for -a
 	char DEFAULT[] = ".";
 	std::vector<char*> direc;
 	std::vector<char> flags;
-	
+
+	all_flags.IGNORE_DOT_AND_DOTDOT = true; // May be changed by scanFlags()
+
 	determine_arguments(argc, argv, direc, flags); // sort arguments into directories and flags
+	scanFlags(flags); // Trigger proper bools for flags
 
 	unsigned int i = 0; // to enable loop if direc is empty
 	do {
@@ -73,7 +80,7 @@ std::vector<char*> getFilesFromDirectory(DIR* dirp) {
 
 		bool equalsDOT = strncmp(direntp->d_name, ".", 1) ? false : true; 
 		bool equalsDOTDOT = strcmp(direntp->d_name, "..") ? false : true; 
-		if (! IGNORE_DOT_AND_DOTDOT || 
+		if (! all_flags.IGNORE_DOT_AND_DOTDOT || 
 				(!equalsDOT  && !equalsDOTDOT )) {
 			// use stat here to find attributes of file
 			files.push_back(direntp->d_name);
@@ -87,10 +94,22 @@ std::vector<char*> getFilesFromDirectory(DIR* dirp) {
 void determine_arguments(int argc, char** argv, std::vector<char*>& direc, std::vector<char>& flags) {
 	for (int i = 1; i < argc; i++) {
 		if (argv[i][0] == '-' && strlen(argv[i]) > 1) // flags = -<arguments>
-			for (unsigned int j = 1; j < strlen(argv[i]); j++)
+			for (unsigned int j = 1; j < strlen(argv[i]); j++) {
 				flags.push_back(argv[i][j]);
+			}
 		else direc.push_back(argv[i]);
 	}
 
 	return;
+}
+
+void scanFlags(const std::vector<char>& flags) {
+	for (unsigned int i = 0; i < flags.size(); i++) {
+		if (flags.at(i) == 'a') all_flags.IGNORE_DOT_AND_DOTDOT = false;
+		else {
+			std::cout << "ls: invalid option -- '" << flags.at(i) << "'\n"
+				<< "Try 'ls --help' for more information." << std::endl;
+			exit(-1);
+		}
+	}
 }
