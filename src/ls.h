@@ -139,7 +139,7 @@ void print_long_format(std::vector<char*> files) {
 	struct stat file_details;
 	struct passwd* user;
 	struct group* grp;
-	struct tm* timeMod;
+	//struct tm* timeMod;
 	
 	if (-1 == stat(files.at(0), &file_details)) {
 		perror("stat");

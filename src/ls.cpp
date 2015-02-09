@@ -21,6 +21,8 @@
 
 struct FLAGS {
 	bool IGNORE_DOT_AND_DOTDOT;
+	bool long_format;
+	bool many_per_line;
 };
 
 FLAGS all_flags;
@@ -28,6 +30,7 @@ FLAGS all_flags;
 void determine_arguments(int argc, char** argv, std::vector<char*>& direc, std::vector<char>& flags);
 std::vector<char*> getFilesFromDirectory(DIR* dirp);
 void scanFlags(const std::vector<char>& flags);
+void printdir(const std::vector<char*> files);
 
 int main(int argc, char** argv)
 {
@@ -36,6 +39,7 @@ int main(int argc, char** argv)
 	std::vector<char> flags;
 
 	all_flags.IGNORE_DOT_AND_DOTDOT = true; // May be changed by scanFlags()
+	all_flags.many_per_line = true; // default
 
 	determine_arguments(argc, argv, direc, flags); // sort arguments into directories and flags
 	scanFlags(flags); // Trigger proper bools for flags
@@ -56,9 +60,9 @@ int main(int argc, char** argv)
 
 		if (direc.size() > 1) { // Multiple directories -> output names too
 			std::cout << dirName << ":" << std::endl;
-			print_files(files, MANY_PER_LINE);
+			printdir(files);
 			if (i < direc.size() - 1) std::cout << '\n'; // give newline if not last dir
-		} else print_files(files, LONG_FORM);
+		} else printdir(files);
 
 		if (-1 == (closedir(dirp))) {
 			perror("closedir");
@@ -109,10 +113,18 @@ void determine_arguments(int argc, char** argv, std::vector<char*>& direc, std::
 void scanFlags(const std::vector<char>& flags) {
 	for (unsigned int i = 0; i < flags.size(); i++) {
 		if (flags.at(i) == 'a') all_flags.IGNORE_DOT_AND_DOTDOT = false;
-		else {
+		else if (flags.at(i) == 'l') {
+			all_flags.many_per_line = false;
+			all_flags.long_format = true;
+		} else {
 			std::cout << "ls: invalid option -- '" << flags.at(i) << "'\n"
 				<< "Try 'ls --help' for more information." << std::endl;
 			exit(-1);
 		}
 	}
+}
+
+void printdir(const std::vector<char*> files) {
+	if (all_flags.many_per_line) print_files(files, MANY_PER_LINE);
+	else if (all_flags.long_format) print_files(files, LONG_FORM);
 }

@@ -1,0 +1,176 @@
+Script started on Mon 09 Feb 2015 12:10:21 AM PST
+~
+dhand002@hammer $ cd CS100/firstrepo/rshell/
+~/CS100/firstrepo/rshell
+dhand002@hammer $ ma[K[Kcd CS100/firstrepo/rshell/[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[Kbin/lsmake ls[1Pbin/ls
+a.out  bin  ex1.cpp  LICENSE  ls.o  Makefile  README.md  src  statManEx.cpp  tests  
+~/CS100/firstrepo/rshell
+dhand002@hammer $ bin/ls -l
+-rwx------ dhand002 csmajs 9822 a.out
+~/CS100/firstrepo/rshell
+dhand002@hammer $ bin/ls -l[Ka
+.  ..  a.out  bin  ex1.cpp  .git  LICENSE  ls.o  Makefile  README.md  src  statManEx.cpp  tests  .vimrc  
+~/CS100/firstrepo/rshell
+dhand002@hammer $ bin/ls -a[K[K.
+a.out  bin  ex1.cpp  LICENSE  ls.o  Makefile  README.md  src  statManEx.cpp  tests  
+~/CS100/firstrepo/rshell
+dhand002@hammer $ bin/ls . [K.
+a.out  cslabs  main.cpp  README  rshell  ucr-cs100  
+~/CS100/firstrepo/rshell
+dhand002@hammer $ bin/ls ../cs[K[Kucr-cs100/
+assignments  gitlearn  lecture-notes  LICENSE  people  README.md  textbook  
+~/CS100/firstrepo/rshell
+dhand002@hammer $ bin/ls ../ucr-cs100/ .
+../ucr-cs100/:
+assignments  gitlearn  lecture-notes  LICENSE  people  README.md  textbook  
+
+.:
+a.out  bin  ex1.cpp  LICENSE  ls.o  Makefile  README.md  src  statManEx.cpp  tests  
+~/CS100/firstrepo/rshell
+dhand002@hammer $ bin/ls ../ucr-cs100/ . ~/ .. .. ..
+../ucr-cs100/:
+assignments  gitlearn  lecture-notes  LICENSE  people  README.md  textbook  
+
+.:
+a.out  bin  ex1.cpp  LICENSE  ls.o  Makefile  README.md  src  statManEx.cpp  tests  
+
+/home/csmajs/dhand002/:
+C:\nppdf32Log\debuglog.txt  Documents           hs_err_pid9270.log  kepler.cpp  script.rb    
+CS100                       Downloads           hs_err_pid9309.log  Music       sports       
+CS61                        Exercise 2 Lab 1    idea.cc             Pictures    Templates    
+Desktop                     hs_err_pid9250.log  idea.cpp            Public      theseus.cpp  
+
+..:
+a.out  cslabs  main.cpp  README  rshell  ucr-cs100  
+
+..:
+a.out  cslabs  main.cpp  README  rshell  ucr-cs100  
+
+..:
+a.out  cslabs  main.cpp  README  rshell  ucr-cs100  
+~/CS100/firstrepo/rshell
+dhand002@hammer $ bin/ls ../ucr-cs100/ . ~/ .. .. .. -a
+../ucr-cs100/:
+.   assignments  .gitignore  .gitmodules    LICENSE  README.md  
+..  .git         gitlearn    lecture-notes  people   textbook   
+
+.:
+.  ..  a.out  bin  ex1.cpp  .git  LICENSE  ls.o  Makefile  README.md  src  statManEx.cpp  tests  .vimrc  
+
+/home/csmajs/dhand002/:
+.                                         .execooo13rMou  .execooovK8Won      
+..                                        .execooo2H9geJ  .execooovMLhGi      
+.adobe                                    .execooo2yLhyp  .execoooVRI6nr      
+.bash_history                             .execooo3BYfil  .execooovuktkt      
+.bash_logout                              .execooo3tLaVj  .execoooWKIn8R      
+.bashrc                                   .execooo4ee69y  .execoooyPyUbk      
+C:\nppdf32Log\debuglog.txt                .execooo5mQ1mE  .execooozWZ0ey      
+.cache                                    .execooo5YU598  .execooozXY9Ul      
+.codeblocks                               .execooo5ZVSoE  .execoooZyIFiM      
+.config                                   .execooo6qOa8m  Exercise 2 Lab 1    
+CS100                                     .execooo80sWFn  .fontconfig         
+CS61                                      .execooo8Y0Gg6  .gconf              
+.dbus                                     .execooob89zBz  .gconfd             
+.DCOPserver_well.cs.ucr.edu_:1014         .execoooBJgy29  .gitlearn           
+.DCOPserver_well.cs.ucr.edu__1014         .execooocCUpDa  .gnome              
+.DCOPserver_well.cs.ucr.edu_localhost:11  .execoooEHoWkh  .gnome2             
+.DCOPserver_well.cs.ucr.edu_localhost:13  .execoooFHCsGx  .gnome2_private     
+.DCOPserver_well.cs.ucr.edu_localhost:15  .execoooFRUb7H  .gnote              
+.DCOPserver_well.cs.ucr.edu_localhost:19  .execooofVGBd1  .gnupg              
+.DCOPserver_well.cs.ucr.edu_localhost:29  .execoooGFXwOQ  .googleearth        
+.DCOPserver_well.cs.ucr.edu_localhost:46  .execooognfPP6  .gstreamer-0.10     
+.DCOPserver_well.cs.ucr.edu_localhost_11  .execoooHh9ebs  .gtk-bookmarks      
+.DCOPserver_well.cs.ucr.edu_localhost_13  .execoooIwHvef  .gtkrc-1.2-gnome2   
+.DCOPserver_well.cs.ucr.edu_localhost_15  .execoooJR2j61  .gvfs               
+.DCOPserver_well.cs.ucr.edu_localhost_19  .execoooLAXAcn  hs_err_pid9250.log  
+.DCOPserver_well.cs.ucr.edu_localhost_29  .execooomQ9U4Y  hs_err_pid9270.log  
+.DCOPserver_well.cs.ucr.edu_localhost_46  .execooonFgLgQ  hs_err_pid9309.log  
+.DCOPserver_well.cs.ucr.edu_NODISPLAY     .execoooNk8vwo  .ICEauthority       
+Desktop                                   .execooonkNDts  idea.cc             
+.dmrc                                     .execoooOq1Yl5  idea.cpp            
+Documents                                 .execoooPH7URm  .imsettings.log     
+Downloads                                 .execooorxqqz3  .kde                
+.eggcups                                  .execooosB9wKN  kepler.cpp          
+.emacs.d                                  .execoootE3t5A  .lesshst            
+.esd_auth                                 .execooouP3ZwI  .local              
+.execooo10pqJO                            .execoooUV7YTQ  .logfactor5         
+
+..:
+.  ..  a.out  cslabs  .git  main.cpp  README  rshell  ucr-cs100  
+
+..:
+.  ..  a.out  cslabs  .git  main.cpp  README  rshell  ucr-cs100  
+
+..:
+.  ..  a.out  cslabs  .git  main.cpp  README  rshell  ucr-cs100  
+~/CS100/firstrepo/rshell
+dhand002@hammer $ bin/ls ../ucr-cs100/ . ~/ .. .. .. -a[K[K[K[C[C[C[C[4h-[4l[4ha[4l[4h [4l
+../ucr-cs100/:
+.   assignments  .gitignore  .gitmodules    LICENSE  README.md  
+..  .git         gitlearn    lecture-notes  people   textbook   
+
+.:
+.  ..  a.out  bin  ex1.cpp  .git  LICENSE  ls.o  Makefile  README.md  src  statManEx.cpp  tests  .vimrc  
+
+/home/csmajs/dhand002/:
+.                                         .execooo13rMou  .execooovK8Won      
+..                                        .execooo2H9geJ  .execooovMLhGi      
+.adobe                                    .execooo2yLhyp  .execoooVRI6nr      
+.bash_history                             .execooo3BYfil  .execooovuktkt      
+.bash_logout                              .execooo3tLaVj  .execoooWKIn8R      
+.bashrc                                   .execooo4ee69y  .execoooyPyUbk      
+C:\nppdf32Log\debuglog.txt                .execooo5mQ1mE  .execooozWZ0ey      
+.cache                                    .execooo5YU598  .execooozXY9Ul      
+.codeblocks                               .execooo5ZVSoE  .execoooZyIFiM      
+.config                                   .execooo6qOa8m  Exercise 2 Lab 1    
+CS100                                     .execooo80sWFn  .fontconfig         
+CS61                                      .execooo8Y0Gg6  .gconf              
+.dbus                                     .execooob89zBz  .gconfd             
+.DCOPserver_well.cs.ucr.edu_:1014         .execoooBJgy29  .gitlearn           
+.DCOPserver_well.cs.ucr.edu__1014         .execooocCUpDa  .gnome              
+.DCOPserver_well.cs.ucr.edu_localhost:11  .execoooEHoWkh  .gnome2             
+.DCOPserver_well.cs.ucr.edu_localhost:13  .execoooFHCsGx  .gnome2_private     
+.DCOPserver_well.cs.ucr.edu_localhost:15  .execoooFRUb7H  .gnote              
+.DCOPserver_well.cs.ucr.edu_localhost:19  .execooofVGBd1  .gnupg              
+.DCOPserver_well.cs.ucr.edu_localhost:29  .execoooGFXwOQ  .googleearth        
+.DCOPserver_well.cs.ucr.edu_localhost:46  .execooognfPP6  .gstreamer-0.10     
+.DCOPserver_well.cs.ucr.edu_localhost_11  .execoooHh9ebs  .gtk-bookmarks      
+.DCOPserver_well.cs.ucr.edu_localhost_13  .execoooIwHvef  .gtkrc-1.2-gnome2   
+.DCOPserver_well.cs.ucr.edu_localhost_15  .execoooJR2j61  .gvfs               
+.DCOPserver_well.cs.ucr.edu_localhost_19  .execoooLAXAcn  hs_err_pid9250.log  
+.DCOPserver_well.cs.ucr.edu_localhost_29  .execooomQ9U4Y  hs_err_pid9270.log  
+.DCOPserver_well.cs.ucr.edu_localhost_46  .execooonFgLgQ  hs_err_pid9309.log  
+.DCOPserver_well.cs.ucr.edu_NODISPLAY     .execoooNk8vwo  .ICEauthority       
+Desktop                                   .execooonkNDts  idea.cc             
+.dmrc                                     .execoooOq1Yl5  idea.cpp            
+Documents                                 .execoooPH7URm  .imsettings.log     
+Downloads                                 .execooorxqqz3  .kde                
+.eggcups                                  .execooosB9wKN  kepler.cpp          
+.emacs.d                                  .execoootE3t5A  .lesshst            
+.esd_auth                                 .execooouP3ZwI  .local              
+.execooo10pqJO                            .execoooUV7YTQ  .logfactor5         
+
+..:
+.  ..  a.out  cslabs  .git  main.cpp  README  rshell  ucr-cs100  
+
+..:
+.  ..  a.out  cslabs  .git  main.cpp  README  rshell  ucr-cs100  
+
+..:
+.  ..  a.out  cslabs  .git  main.cpp  README  rshell  ucr-cs100  
+~/CS100/firstrepo/rshell
+dhand002@hammer $ bin/ls -a ../ucr-cs100/ . ~/ .. .. ..[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kl ../us[Kcr-cs100/
+stat: No such file or directory
+~/CS100/firstrepo/rshell
+dhand002@hammer $ bin/ls -l ../ucr-cs100/[C[C[1P ../ucr-cs100/R ../ucr-cs100/
+ls: invalid option -- 'R'
+Try 'ls --help' for more information.
+~/CS100/firstrepo/rshell
+dhand002@hammer $ bin/ls -R ../ucr-cs100/[1P ../ucr-cs100/a ../ucr-cs100/
+.   assignments  .gitignore  .gitmodules    LICENSE  README.md  
+..  .git         gitlearn    lecture-notes  people   textbook   
+~/CS100/firstrepo/rshell
+dhand002@hammer $ exxit[K[K[Kit
+exit
+
+Script done on Mon 09 Feb 2015 12:12:29 AM PST
