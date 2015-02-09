@@ -86,8 +86,6 @@ void print_many_per_line(std::vector<char*> files) {
 				num_rows = files.size() / num_columns + 
 					(files.size() % num_columns ? 1 : 0);
 				foundROWbyCOLUMN = false;
-
-				std::cerr << "~~~~~~~~~~\n";
 				break;
 			}
 		}
