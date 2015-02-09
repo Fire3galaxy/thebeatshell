@@ -18,6 +18,7 @@
 #include <assert.h>
 #include <iomanip>
 #include <ctype.h>
+#include <sstream>
 
 #define MIN_COLUMN_WIDTH 3 // Learned from GNU: . and 2 spaces b/w columns
 #define MAX(arg1, arg2) arg1 > arg2 ? arg1 : arg2
@@ -141,7 +142,21 @@ void print_long_format(std::vector<char*> files) {
 	struct passwd* user;
 	struct group* grp;
 	struct tm* timeMod;
+
+	std::ostringstream oss;
 	
+	unsigned long bitsizeWidth = 0;
+	for (unsigned int i = 0; i < files.size(); i++) {
+		if (-1 == stat(files.at(i), &file_details)) {
+			perror("stat");
+			exit(-1);
+		}
+		
+		oss << file_details.st_size;
+		if (bitsizeWidth < oss.str().size())
+			bitsizeWidth = oss.str().size();
+		oss.str("");
+	}
 	for (unsigned int i = 0; i < files.size(); i++) {
 		if (-1 == stat(files.at(i), &file_details)) {
 			perror("stat");
@@ -171,14 +186,15 @@ void print_long_format(std::vector<char*> files) {
 		}
 		std::cout << ' ' << grp->gr_name; // group's username
 
-		std::cout << ' ' << file_details.st_size; // bit size
+		std::cout << ' ' << std::right << std::setw(bitsizeWidth) << file_details.st_size; // bit size
+		std::cout << std::left; // Reset
 
 		timeMod = localtime(&file_details.st_mtime); // last modified time
 		char timeString[80];
 		strftime(timeString, sizeof(timeString), "%b %e %R", timeMod);
 		std::cout << ' ' << timeString;
 		
-		std::cout << ' ' << files.at(0) << std::endl;
+		std::cout << ' ' << files.at(i) << std::endl;
 	}
 }
 
