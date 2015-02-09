@@ -39,6 +39,7 @@ void print_many_per_line(std::vector<char*> files) {
 	unsigned int num_columns = MAX(1, charLineCount / MIN_COLUMN_WIDTH); 
 	unsigned int num_rows = files.size() / num_columns + 
 		(files.size() % num_columns ? 1 : 0);
+
 	
 	bool foundROWbyCOLUMN = false;
 	// record width of each column while counting
@@ -61,21 +62,23 @@ void print_many_per_line(std::vector<char*> files) {
 			int lineLength = 0;
 			for (j = 0, k = i; j < num_columns && k < files.size() 
 					&& lineLength <= charLineCount; j++, k += num_rows) {
-				//length of lines in chars
-				lineLength += strlen(files.at(k)); 
 
 				// record widths of columns based on longest file name
 				if (strlen(files.at(k)) > columnMaxWidth.at(j))
 					columnMaxWidth.at(j) = strlen(files.at(k));
 
+				//length of lines in chars
+				if (columnMaxWidth.at(j) == 0) lineLength += strlen(files.at(k)); 
+				else lineLength += columnMaxWidth.at(j);
+
 				// space in between file names
 				if (j != num_columns - 1) lineLength += 2; 
 			}
-			
-			// If too many columns in initial guess (extremely likely)
-			// and only need 1 row, set num_columns to j
-			if (j < num_columns) num_columns = j;
 
+			// If too many columns in initial guess (extremely likely)
+			// and only need 1 row, set num_columns to files.size()
+			if (num_columns > j) num_columns = j; 
+			
 			// File names too long for curr column count, loop again with 
 			// diff column and row count
 			if (lineLength > charLineCount) {  // Risk of being really inefficient. 
@@ -83,6 +86,8 @@ void print_many_per_line(std::vector<char*> files) {
 				num_rows = files.size() / num_columns + 
 					(files.size() % num_columns ? 1 : 0);
 				foundROWbyCOLUMN = false;
+
+				std::cerr << "~~~~~~~~~~\n";
 				break;
 			}
 		}
@@ -90,7 +95,6 @@ void print_many_per_line(std::vector<char*> files) {
 	
 	unsigned int i = 0, j = 0, k = 0; // for column width
 	std::cout << std::left; 
-
 	for (i = 0; i < num_rows; i++) {
 		for (j = 0, k = i ; j < num_columns && k < files.size(); j++, k += num_rows) {
 			int columnWidth = columnMaxWidth.at(j) + (j != num_columns ? 2 : 0);
