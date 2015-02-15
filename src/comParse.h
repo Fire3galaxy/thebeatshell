@@ -10,7 +10,7 @@ using namespace boost;
 class comParse {
 private:
 	vector<string> words;
-	vector<vector<char*> > tokens_lines;
+	vector<vector<char*> > separatedTokens; // keeps commands separated by operators in scope
 
 public:
 	vector<char**> parseLine(string com) {
@@ -24,20 +24,21 @@ public:
 		char_separator<char> charSep(rm_delim, kp_delim); // should ignore only whitespace
 		tokenizer parse(com, charSep);
 
+		// add every token to vector<string> words
 		for (tokenizer::iterator it = parse.begin(); it != parse.end(); it++)
 			words.push_back(*it);
 
 		bool hashtag = false;
 		// COMMENTS, if string has hashtag, remove everything else
 		for (vector<string>::iterator it = words.begin(); 
-				!hashtag && it != words.end(); it++) {
-			size_t a = it->find("#");
+				!hashtag && it != words.end(); it++) { // In condition: if hashtag = true, stop loop
+			int a = it->find("#");
 
 			if (a != string::npos) {
-				it->erase(a, string::npos); // Remove all chars from #, onward
+				it->erase(a, it->size()); // Remove all chars from #, onward
 
 				// Remove all subsequent words and current word from arg list
-				if (a == 0 && !words.empty()) words.erase(it, words.end());
+				if ( a == 0 ) words.erase(it, words.end());
 				// Remove all subsequent words
 				else words.erase(it + 1, words.end());
 
@@ -46,14 +47,34 @@ public:
 		}
 		
 		
+		// Semicolon search
 		vector<char*> n;
 		for (vector<string>::iterator it = words.begin(); it != words.end(); it++) {
-			if (it->at(0) != ';') {
-				n.push_back(&it->at(0));
-			} else {
-				tokens_lines.push_back(n);
-				n.clear();
-			}
+			int indx = it->find(';');
+
+			if (indx == string::npos) n.push_back(it->c_str()); // add normal word
+			else {
+				string before_sc = it->substr(0, indx); // substr, noninclusive 
+				if ( !(before_sc.empty()) ) n.push_back(before_sc); // add word b/f ';'
+
+				n.push_back(NULL); // data() turns vect<char*> into char**, so need NULL delim
+				separatedTokens.push_back(n);
+
+				n.clear(); // Begin next stream of tokens
+
+				string after_sc = it->substr(indx + 1, string::npos); // substr, to end (npos means rest of string)
+
+				// If other semicolons in string, repeat with string after_sc
+				if (
+				while ( (indx = after_sc.find(';')) != string::npos ) {
+					before_sc = after_sc.substr(0, indx); // substr, noninclusive 
+					if ( !(before_sc.empty()) ) n.push_back(before_sc); // add word b/f ';'
+
+					n.push_back(NULL); // data() turns vect<char*> into char**, so need NULL delim
+					separatedTokens.push_back(n);
+
+					n.clear(); // Begin next stream of tokens
+				}
 		}
 
 		vector<char**> commands; // Due to parsing format, statements like
@@ -66,6 +87,10 @@ public:
 				commands.push_back(c_);
 			}
 		}
+
+		for (unsigned int i = 0; i < commands.size(); i++)
+			for (unsigned int j; commands.at(i)[j] != NULL; j++)
+				cerr << commands.at(i)[j] << endl;
 		
 		return commands;
 	}
