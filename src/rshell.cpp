@@ -14,35 +14,39 @@ using namespace std;
 
 int main() {
 	while (true) {
-		char* const* argv = NULL;
-		vector<char**> args; // FIXME delete later
-		comParse cp;
+		//char* const* argv = NULL;
+		//vector<char* const*> multipleArgv;
+		vector<const char*> commands;
+		comParse comPr;
 		do {
 			cerr << "$ " << flush;
 			
-			string command = "";
-			getline(cin, command);	// Get command
+			string input = "";
+			getline(cin, input);	// Get command
 
-			args = cp.parseLine(command); // FIXME used to be argv here
-		} while (argv == NULL); // if empty line, repeat req for command
+			commands = comPr.parseLine(input);
+		} while (commands.size() == 1); // if empty line, repeat req for command. sz 1 = just NULL delim.
 
-		//char ex[5] = {'e','x','i','t','\0'};
-		//if (strcmp(argv[0], ex) == 0 && cp.size() == 1) return 0; // EXIT command
-
-		for (unsigned int i = 0; i < args.size(); i++) 
-			for (unsigned int j = 0; args.at(i)[j] != '\0'; j++)
-				cerr << args.at(i)[j] << endl;
-
-		int pid = fork();
-		if (pid == -1) {	// Error in fork
-			perror("error in fork");
-			exit(-1);
-		} else if (pid == 0) {	// Child Process
-			if (-1 == execvp(argv[0], argv)) {
-				perror("error in execvp");
-				exit(-1);
-			}
+		//int startIndx = 0; // Semicolon, multiple args
+		for (unsigned int i = 0; i < commands.size() - 1; i++) {
+			if (strcmp(commands.at(i), ";") == 0) cerr << "; at " << i << endl;
+			else if (strcmp(commands.at(i), "&") == 0) cerr << "& at " << i << endl;
+			else if (strcmp(commands.at(i), "|") == 0) cerr << "| at " << i << endl;
 		}
+
+		//char ex[5] = "exit";
+		//if (strcmp(argv[0], ex) == 0 && comPr.size() == 1) return 0; // EXIT command
+
+		//int pid = fork();
+		//if (pid == -1) {	// Error in fork
+		//	perror("error in fork");
+		//	exit(-1);
+		//} else if (pid == 0) {	// Child Process
+		//	if (-1 == execvp(argv[0], argv)) {
+		//		perror("error in execvp");
+		//		exit(-1);
+		//	}
+		//}
 	}
 
 	return 0;

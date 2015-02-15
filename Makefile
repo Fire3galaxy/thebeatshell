@@ -1,5 +1,5 @@
 VPATH = src
-CXXFLAGS = -ansi -pedantic -Wall -Werror
+CXXFLAGS = -ansi -pedantic -Wall -Werror -g
 objects = rshell.o
 
 all: $(objects) | bin
