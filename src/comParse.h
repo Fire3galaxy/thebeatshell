@@ -3,6 +3,7 @@
 
 #include <boost/tokenizer.hpp>
 #include <iterator>
+#include <string.h>
 
 using namespace std;
 using namespace boost;
@@ -24,8 +25,7 @@ public:
 
 		// add every token to vector<string> words
 		for (tokenizer::iterator it = parse.begin(); it != parse.end(); it++)
-			if (*it != ";") words.push_back(*it);
-			else words.push_back(""); // NULL delim for data() (semicolons)
+			words.push_back(*it);
 
 		bool hashtag = false;
 		vector<const char*> commands;
@@ -44,6 +44,10 @@ public:
 		commands.push_back(NULL); // when using data(), need null delim
 				
 		return commands;
+	}
+
+	int size() {
+		return words.size();
 	}
 };
 

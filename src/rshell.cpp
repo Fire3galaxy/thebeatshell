@@ -14,8 +14,7 @@ using namespace std;
 
 int main() {
 	while (true) {
-		//char* const* argv = NULL;
-		//vector<char* const*> multipleArgv;
+		char const** argv = NULL;
 		vector<const char*> commands;
 		comParse comPr;
 		do {
@@ -27,15 +26,31 @@ int main() {
 			commands = comPr.parseLine(input);
 		} while (commands.size() == 1); // if empty line, repeat req for command. sz 1 = just NULL delim.
 
-		//int startIndx = 0; // Semicolon, multiple args
-		for (unsigned int i = 0; i < commands.size() - 1; i++) {
-			if (strcmp(commands.at(i), ";") == 0) cerr << "; at " << i << endl;
-			else if (strcmp(commands.at(i), "&") == 0) cerr << "& at " << i << endl;
-			else if (strcmp(commands.at(i), "|") == 0) cerr << "| at " << i << endl;
+		int size1 = 0;
+		for (unsigned int i = 0; i < commands.size(); i++) {
+			if ( strcmp(commands.at(i), ";") == 0 ) {
+				size1 = i;
+				break;
+			}
 		}
+		cout << size1;
 
-		//char ex[5] = "exit";
-		//if (strcmp(argv[0], ex) == 0 && comPr.size() == 1) return 0; // EXIT command
+		/* Confusing as heck, let me explain!
+		 * char const* means pointer to a constant char
+		 * so char const* const means a const pointer to a const char
+		 * and char const* const* means a const pointer to a const char pointer!
+		 * (Read declarations from right to left to make it make sense -
+		 *  char const* = POINTER (*) to a CONST CHAR)
+		 */
+		//char const* const* c_arr = &commands[0]; // even if Not necessary: keep as really cool discovery!
+		argv = &commands[0];
+		argv[size1] = NULL;
+		for (int i = 0; i < size1 + 1; i++)
+			if (argv + i != NULL) cout << argv[i] << endl;
+			else cout << "(null)" << endl;
+
+		char ex[5] = "exit";
+		if (strcmp(argv[0], ex) == 0 && comPr.size() == 1) return 0; // EXIT command
 
 		//int pid = fork();
 		//if (pid == -1) {	// Error in fork
