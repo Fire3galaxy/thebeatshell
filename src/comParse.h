@@ -53,7 +53,9 @@ public:
 	}
 
 	void deleteCStrings(vector<char*>& commands) {
-		for (unsigned int i = commands.size() - 1; i >= 0; i++) delete[] commands.at(i);
+		for (unsigned int i = 0; i < commands.size(); i++) 
+			if (commands.at(i) != NULL) 
+				delete[] commands.at(i);
 	}
 };
 

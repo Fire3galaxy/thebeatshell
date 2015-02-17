@@ -43,9 +43,6 @@ int main() {
 		 *  char const* = POINTER (*) to a CONST CHAR)
 		 */
 		//char const* const* c_arr = &commands[0]; // even if Not necessary: keep as really cool discovery!
-		for (unsigned int i = 0; i < commands.size(); i++)
-			if (argv[i] != NULL) cout << argv[i] << endl;
-			else cout << "(null)" << endl;
 
 		char ex[5] = "exit";
 		if (strcmp(argv[0], ex) == 0) {
@@ -61,9 +58,11 @@ int main() {
 		} else if (pid == 0) {	// Child Process
 			if (-1 == execvp(argv[0], argv)) {
 				perror("error in execvp");
-				comPr.deleteCStrings(commands);
 				exit(-1);
 			}
+		} else if (pid > 0) { // parent!
+			if (-1 == wait(0))
+				perror("wait");
 		}
 
 		comPr.deleteCStrings(commands);
