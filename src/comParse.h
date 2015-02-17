@@ -10,11 +10,11 @@ using namespace boost;
 
 class comParse {
 private:
-	vector<string> words;
-
+	vector<char*> commands;
 public:
-	vector<const char*> parseLine(const string com) {
-		words.clear(); // Reuse of function requires empty arrays
+	const vector<char*>& parseLine(const string com) {
+		commands.clear();
+		vector<string> words;
 
 		typedef tokenizer<char_separator<char> > tokenizer;
 
@@ -28,17 +28,19 @@ public:
 			words.push_back(*it);
 
 		bool hashtag = false;
-		vector<const char*> commands;
+		commands.resize(words.size());
 		// if string has hashtag, remove all subsequent strings
 		// else add string to c_string equiv return vector
-		for (vector<string>::iterator it = words.begin(); 
-				!hashtag && it != words.end(); it++) { // In condition: if hashtag = true, stop loop
-			if (*it == "#") {
+		for (unsigned int i = 0; i < words.size() && !hashtag; i++) { // In condition: if hashtag = true, stop loop
+			if (words.at(i) == "#") {
 				// Remove all subsequent words and current word from arg list
-				words.erase(it, words.end());
+				words.erase(words.begin() + i, words.end());
 
 				hashtag = true;
-			} else commands.push_back(it->c_str());
+			} else {
+				commands.at(i) = new char[words.at(i).size()]; // Prepare space
+				strcpy(commands.at(i), words.at(i).c_str()); // Copy!
+			}
 		}
 
 		commands.push_back(NULL); // when using data(), need null delim
@@ -47,7 +49,11 @@ public:
 	}
 
 	int size() {
-		return words.size();
+		return commands.size();
+	}
+
+	void deleteCStrings(vector<char*>& commands) {
+		for (unsigned int i = commands.size() - 1; i >= 0; i++) delete[] commands.at(i);
 	}
 };
 
