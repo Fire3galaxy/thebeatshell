@@ -57,12 +57,22 @@ int main() {
 			exit(-1);
 		} else if (pid == 0) {	// Child Process
 			if (-1 == execvp(argv[0], argv)) {
-				perror("error in execvp");
-				exit(-1);
+				if (errno == EACCES) { // Access denied
+					perror(argv[0]);
+				} else if (errno == ENOEXEC) { // Not Exec
+					perror(argv[0]);
+				} else if (errno == ENOENT) { // Does not exist
+					perror(argv[0])
+				} else {
+					perror("error in execvp");
+					exit(-1);
+				}
 			}
 		} else if (pid > 0) { // parent!
 			if (-1 == wait(0))
 				perror("wait");
+			if (errno != 0 && errno != EACCES && errno != ENOEXEC && errno != ENOENT)
+				exit(-1);
 		}
 
 		comPr.deleteCStrings(commands);
