@@ -35,6 +35,7 @@ public:
 			if (words.at(i) == "#") {
 				// Remove all subsequent words and current word from arg list
 				words.erase(words.begin() + i, words.end());
+				commands.resize(i);
 
 				hashtag = true;
 			} else {

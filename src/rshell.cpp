@@ -57,12 +57,16 @@ int main() {
 			exit(-1);
 		} else if (pid == 0) {	// Child Process
 			if (-1 == execvp(argv[0], argv)) {
+				// All children need to exit! (forgot this)
 				if (errno == EACCES) { // Access denied
 					perror(argv[0]);
+					exit(-1);
 				} else if (errno == ENOEXEC) { // Not Exec
 					perror(argv[0]);
+					exit(-1);
 				} else if (errno == ENOENT) { // Does not exist
-					perror(argv[0])
+					perror(argv[0]);
+					exit(-1);
 				} else {
 					perror("error in execvp");
 					exit(-1);
