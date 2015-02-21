@@ -19,7 +19,7 @@ public:
 		typedef tokenizer<char_separator<char> > tokenizer;
 
 		char rm_delim[4] = {' ', '\t', '\n', '\0'}, // null is delim, not char for filtering
-			kp_delim[5] = {'&', '|', ';', '#', '\0'};
+			kp_delim[6] = {'&', '|', ';', '#', '<', '\0'};
 		char_separator<char> charSep(rm_delim, kp_delim); // should ignore only whitespace
 		tokenizer parse(com, charSep);
 
@@ -39,7 +39,7 @@ public:
 
 				hashtag = true;
 			} else {
-				commands.at(i) = new char[words.at(i).size()]; // Prepare space
+				commands.at(i) = new char[words.at(i).size() + 1]; // Prepare space
 				strcpy(commands.at(i), words.at(i).c_str()); // Copy!
 			}
 		}
