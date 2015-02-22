@@ -19,7 +19,7 @@ public:
 		typedef tokenizer<char_separator<char> > tokenizer;
 
 		char rm_delim[4] = {' ', '\t', '\n', '\0'}, // null is delim, not char for filtering
-			kp_delim[6] = {'&', '|', ';', '#', '<', '\0'};
+			kp_delim[7] = {'&', '|', ';', '#', '<', '>', '\0'};
 		char_separator<char> charSep(rm_delim, kp_delim); // should ignore only whitespace
 		tokenizer parse(com, charSep);
 
