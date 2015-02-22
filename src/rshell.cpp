@@ -83,13 +83,16 @@ int main() {
 			commands = comPr.parseLine(input);
 		} while (commands.size() == 1); // if empty line, repeat req for command. sz 1 = just NULL delim.
 
-		argv = &commands[0];
-		redirect rdts;
+		int timeout = 0;
+		vector<char*> realcom; // command + arguments - input redirection & semicolon
+		argv = &commands.at(0);
+		redirect rdts;	// contains redirection flags and values
 
 		for (unsigned int i = 0; i < commands.size() - 1; i++) { // NULL at end
 			if ( strcmp(commands.at(i), ";") == 0) {
 				delete[] commands.at(i);
 				argv[i] = NULL;
+				timeout = 1;
 
 				break;
 			} else if (strcmp(commands.at(i), "<") == 0
@@ -97,6 +100,7 @@ int main() {
 				delete[] commands.at(i);
 				argv[i] = NULL;
 
+				timeout = 2;	// do not push this or next arg
 				rdts.doI_Rdct = true;
 				rdts.indexIR = i;
 			} else if (strcmp(commands.at(i), ">") == 0
@@ -104,16 +108,23 @@ int main() {
 				delete[] commands.at(i);
 				argv[i] = NULL;
 
+				timeout = 2;	// do not push this or next arg
 				rdts.doO_Rdct = true;
 				rdts.indexOR = i;
 			} else if (strcmp(commands.at(i), "2>") == 0) {
 				delete[] commands.at(i);
 				argv[i] = NULL;
 
+				timeout = 2;	// do not push this or next arg
 				rdts.doE_Rdct = true;
 				rdts.indexER = i;
 			}
+
+			if (timeout != 0) timeout--;
+			else realcom.push_back(commands.at(i));
 		}
+
+		realcom.push_back(NULL);
 
 		/* Confusing as heck, let me explain!
 		 * char const* means pointer to a constant char
@@ -135,6 +146,8 @@ int main() {
 		if (rdts.doI_Rdct) doExec = redirection(argv, rdts, STDIN_FILENO);
 		if (rdts.doO_Rdct) doExec = redirection(argv, rdts, STDOUT_FILENO);
 		if (rdts.doE_Rdct) doExec = redirection(argv, rdts, STDERR_FILENO);
+
+		argv = &realcom.at(0); // initialize to char**
 
 		if (doExec) {
 			int pid = fork();
