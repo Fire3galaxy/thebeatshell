@@ -87,13 +87,13 @@ int main() {
 		redirect rdts;
 
 		for (unsigned int i = 0; i < commands.size() - 1; i++) { // NULL at end
-			if ( strcmp(commands.at(i), ";") == 0
-					|| strcmp(commands.at(i), "0<")) {
+			if ( strcmp(commands.at(i), ";") == 0) {
 				delete[] commands.at(i);
 				argv[i] = NULL;
 
 				break;
-			} else if (strcmp(commands.at(i), "<") == 0) {
+			} else if (strcmp(commands.at(i), "<") == 0
+					|| strcmp(commands.at(i), "0<") == 0) {
 				delete[] commands.at(i);
 				argv[i] = NULL;
 
