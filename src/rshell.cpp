@@ -14,22 +14,26 @@
 using namespace boost;
 using namespace std;
 
+#define I_REDIRECT 0
+#define O_REDIRECT 1
+#define ORD_APPEND 2
+
 struct redirect;
-bool redirection(char** argv, redirect& rdts, const int fd);
+bool redirection(char** argv, redirect& rdts, const int id);
+bool setRdct(char** argv, redirect& rdts);
 
 struct redirect {
 	// May now be irrelevant b/c rdctInd replaces it
 	int indexIR;
 	int indexOR;
 	int indexPR;
-
 	bool doI_Rdct; // input redirect
 	bool doO_Rdct; // output redirect
 	int savedP; // for duping 
 	int pfd; // when opening new fd
 
 	vector<int> v_ind,v_pfd,v_savedP;
-	vector<bool> v_op;
+	vector<pair<int,int> > v_opfd;
 
 	vector<int*> currentFD;
 
@@ -38,7 +42,6 @@ struct redirect {
 		indexIR = -1;
 		indexPR = -1;
 		
-
 		doO_Rdct = false;
 		doI_Rdct = false;
 		savedP = -1;
@@ -88,14 +91,21 @@ int main() {
 				timeout = 1;
 
 				break;
-			} else if (strcmp(commands.at(i), "<") == 0
-					|| strcmp(commands.at(i), "0<") == 0) {
+			} else if (strchr(commands.at(i), '<') != NULL) {
+				int fd = -1;
+				if (isdigit(commands.at(i)[0])) fd = commands.at(i)[0]; // num before operator
+
 				delete[] commands.at(i);
 				argv[i] = NULL;
 
 				timeout = 2;	// do not push this or next arg
-				rdts.doI_Rdct = true;
-				rdts.indexPR = i;
+				rdts.v_opfd.push_back( pair<int,int>(I_REDIRECT, fd) ); // op, fd
+
+				if ( !(i + 1 < commands.size()) ) {	// next arg must exist (filename)
+					cerr << "rshell: syntax error at <";
+					exit(-1);
+				}
+				rdts.v_ind.push_back(i + 1); // index
 			} else if (strcmp(commands.at(i), ">") == 0
 					|| strcmp(commands.at(i), "1>") == 0) {
 				delete[] commands.at(i);
@@ -129,7 +139,7 @@ int main() {
 			return 0; // EXIT command
 		}
 
-		if (rdts.doI_Rdct) doExec = redirection(argv, rdts, STDIN_FILENO);
+		doExec = setRdct(argv, rdts);
 		//if (rdts.doO_Rdct) doExec = redirection(argv, rdts, STDOUT_FILENO);
 		//if (rdts.doE_Rdct) doExec = redirection(argv, rdts, STDERR_FILENO);
 
@@ -166,15 +176,9 @@ int main() {
 			}
 		}
 
-		if (rdts.doI_Rdct) {
-			if (-1 == dup2(rdts.savedSTDIN, rdts.rfd)) {	// Restore stdin
-				perror("dup2-input");
-				exit(-1);
-			}
-		}
-		if (rdts.doO_Rdct) {
-			if (-1 == dup2(rdts.savedSTDOUT, rdts.wofd)) {	// Restore stdout
-				perror("dup2-output");
+		for (unsigned int i = 0; i < rdts.v_savedP.size(); i++) {
+			if (-1 == dup2(rdts.v_savedP.at(i), rdts.v_pfd.at(i))) {	// Restore saved fds
+				perror("dup2");
 				exit(-1);
 			}
 		}
@@ -186,46 +190,60 @@ int main() {
 	return 0;
 }
 
+
+bool setRdct(char** argv, redirect& rdts) {
+	bool doExec = true;
+	for (unsigned int i = 0; i < rdts.v_opfd.size(); i++)
+		doExec = redirection(argv, rdts, i) ? doExec : false; // if false, stay false
+	return doExec;
+}
+
 // closes respective fd and opens file in its place
-bool redirection(char** argv, redirect& rdts, int fd) {
-	int* savedFD = rdts.savedP;
+bool redirection(char** argv, redirect& rdts, const int id) {
+	/*int* savedFD = rdts.savedP;
 	int* newFD = rdts.pfd;
 	int* index = rdts.indexPR;
+	*/
+
+	int savedFD,newFD;
+	int index = rdts.v_ind.at(id);
 	int FLAG;
 
-	if (rdts.doI_Rdct) {
+	// 0 == INPUT, 1 == OUTPUT
+	if (rdts.v_opfd.at(id).first == 0) {
 		FLAG = O_RDONLY;
-		if (fd == -1) fd = 0; // DEFAULT for input operator
-	} else if (rdts.doO_Rdct) {
+		if (rdts.v_opfd.at(id).second == -1) 
+			rdts.v_opfd.at(id).second = 0; // DEFAULT for input operator
+	} else if (rdts.v_opfd.at(id).first == 1) {
 		FLAG = O_WRONLY | O_CREAT | O_TRUNC;
-		if (fd == -1) fd = 1; // DEFAULT for output operator
+		if (rdts.v_opfd.at(id).second == -1) 
+			rdts.v_opfd.at(id).second = 1; // DEFAULT for output operator
 	} 
 
 	// dup the fd
-	if ( -1 == (*savedFD = dup(fd)) ) {
-		perror("dup-redirect" + fd);
+	if ( -1 == (savedFD = dup(rdts.v_opfd.at(id).second)) ) {
+		perror("dup-redirect" + rdts.v_opfd.at(id).second);
 		exit(-1);
 	}
+	rdts.v_savedP.push_back(savedFD); // Saving fd for dup2 later
 
 	// close fd
-	if ( -1 == close(fd) ) {
-		perror("close-redirect" + fd);
+	if ( -1 == close(rdts.v_opfd.at(id).second) ) {
+		perror("close-redirect" + rdts.v_opfd.at(id).second);
 		exit(-1);
 	}
 
 	// open file
-	if ( -1 == (*newFD = open(argv[*index + 1], FLAG)) ) { 
+	if ( -1 == (newFD = open(argv[index], FLAG)) ) { 
 		if (errno == EACCES || errno == ENOENT) { 	//FIXME
-			perror(argv[*index + 1]);
+			perror(argv[index]);
 			return false;
 		} else {
-			perror("open-redirect" + fd);
+			perror("open-redirect" + rdts.v_opfd.at(id).second);
 			exit(-1);
 		}
 	}
-
-	// record which fd to close
-	rdts.currentFD.push_back(newFD);
+	rdts.v_pfd.push_back(newFD); // Saving new fd to close later
 
 	return true;
 }
