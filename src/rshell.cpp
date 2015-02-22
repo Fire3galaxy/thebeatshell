@@ -18,38 +18,31 @@ struct redirect;
 bool redirection(char** argv, redirect& rdts, const int fd);
 
 struct redirect {
-	bool doI_Rdct; // input redirect
+	// May now be irrelevant b/c rdctInd replaces it
 	int indexIR;
-	int savedSTDIN; // for duping STDIN and saving it
-	int rfd; // when opening new fd in 0 for reading
-
-	bool doO_Rdct; // output redirect
 	int indexOR;
-	int savedSTDOUT; // for duping STDOUT and saving it
-	int wofd; // when opening new fd in 1 for writing
+	int indexPR;
 
-	bool doE_Rdct; // output redirect
-	int indexER;
-	int savedSTDERR; // for duping STDERR and saving it
-	int wefd; // when opening new fd in 2 for writing
+	bool doI_Rdct; // input redirect
+	bool doO_Rdct; // output redirect
+	int savedP; // for duping 
+	int pfd; // when opening new fd
+
+	vector<int> v_ind,v_pfd,v_savedP;
+	vector<bool> v_op;
 
 	vector<int*> currentFD;
 
 	redirect() {
-		doI_Rdct = false;
-		savedSTDIN = -1;
-		rfd = -1;
-		indexIR = -1;
-		
-		doO_Rdct = false;
-		savedSTDOUT = -1;
-		wofd = -1;
 		indexOR = -1;
-	
-		doE_Rdct = false;
-		savedSTDERR = -1;
-		wefd = -1;
-		indexER = -1;
+		indexIR = -1;
+		indexPR = -1;
+		
+
+		doO_Rdct = false;
+		doI_Rdct = false;
+		savedP = -1;
+		pfd = -1;
 	}
 	void closeCurrFDs() {
 		if (!currentFD.empty()) {
@@ -102,7 +95,7 @@ int main() {
 
 				timeout = 2;	// do not push this or next arg
 				rdts.doI_Rdct = true;
-				rdts.indexIR = i;
+				rdts.indexPR = i;
 			} else if (strcmp(commands.at(i), ">") == 0
 					|| strcmp(commands.at(i), "1>") == 0) {
 				delete[] commands.at(i);
@@ -111,14 +104,7 @@ int main() {
 				timeout = 2;	// do not push this or next arg
 				rdts.doO_Rdct = true;
 				rdts.indexOR = i;
-			} else if (strcmp(commands.at(i), "2>") == 0) {
-				delete[] commands.at(i);
-				argv[i] = NULL;
-
-				timeout = 2;	// do not push this or next arg
-				rdts.doE_Rdct = true;
-				rdts.indexER = i;
-			}
+			} 
 
 			if (timeout != 0) timeout--;
 			else realcom.push_back(commands.at(i));
@@ -144,8 +130,8 @@ int main() {
 		}
 
 		if (rdts.doI_Rdct) doExec = redirection(argv, rdts, STDIN_FILENO);
-		if (rdts.doO_Rdct) doExec = redirection(argv, rdts, STDOUT_FILENO);
-		if (rdts.doE_Rdct) doExec = redirection(argv, rdts, STDERR_FILENO);
+		//if (rdts.doO_Rdct) doExec = redirection(argv, rdts, STDOUT_FILENO);
+		//if (rdts.doE_Rdct) doExec = redirection(argv, rdts, STDERR_FILENO);
 
 		argv = &realcom.at(0); // initialize to char**
 
@@ -192,12 +178,6 @@ int main() {
 				exit(-1);
 			}
 		}
-		if (rdts.doE_Rdct) {
-			if (-1 == dup2(rdts.savedSTDERR, rdts.wefd)) {	// Restore stdout
-				perror("dup2-stderr");
-				exit(-1);
-			}
-		}
 
 		comPr.deleteCStrings(commands);
 		//rdts.closeCurrFDs();
@@ -207,66 +187,45 @@ int main() {
 }
 
 // closes respective fd and opens file in its place
-bool redirection(char** argv, redirect& rdts, const int fd) {
-	bool doRedir; // generalize between input, output, and errput, with pointers
-	int* savedFD;
-	int* newFD;
-	int* index;
+bool redirection(char** argv, redirect& rdts, int fd) {
+	int* savedFD = rdts.savedP;
+	int* newFD = rdts.pfd;
+	int* index = rdts.indexPR;
 	int FLAG;
 
-	if (fd == STDIN_FILENO) {
-		doRedir = rdts.doI_Rdct;
-		savedFD = &(rdts.savedSTDIN);
-		newFD = &(rdts.rfd);
-		index = &(rdts.indexIR);
-
+	if (rdts.doI_Rdct) {
 		FLAG = O_RDONLY;
-	} else if (fd == STDOUT_FILENO) {
-		doRedir = rdts.doO_Rdct;
-		savedFD = &(rdts.savedSTDOUT);
-		newFD = &(rdts.wofd);
-		index = &(rdts.indexOR);
-
+		if (fd == -1) fd = 0; // DEFAULT for input operator
+	} else if (rdts.doO_Rdct) {
 		FLAG = O_WRONLY | O_CREAT | O_TRUNC;
-	} else if (fd == STDERR_FILENO) {
-		doRedir = rdts.doE_Rdct;
-		savedFD = &(rdts.savedSTDERR);
-		newFD = &(rdts.wefd);
-		index = &(rdts.indexER);
+		if (fd == -1) fd = 1; // DEFAULT for output operator
+	} 
 
-		FLAG = O_WRONLY | O_CREAT | O_TRUNC;
-	} else {
-		cerr << "Redirection failed\n";
+	// dup the fd
+	if ( -1 == (*savedFD = dup(fd)) ) {
+		perror("dup-redirect" + fd);
 		exit(-1);
 	}
 
-	if (doRedir) {
-		// dup the STDIN
-		if ( -1 == (*savedFD = dup(fd)) ) {
-			perror("dup-redirect" + fd);
-			exit(-1);
-		}
-
-		// close STDIN
-		if ( -1 == close(fd) ) {
-			perror("close-redirect" + fd);
-			exit(-1);
-		}
-
-		// open file
-		if ( -1 == (*newFD = open(argv[*index + 1], FLAG)) ) { 
-			if (errno == EACCES || errno == ENOENT) { 	//FIXME
-				perror(argv[rdts.indexIR + 1]); 	// filename syntax
-				return false;
-			} else {
-				perror("open-redirect" + fd);
-				exit(-1);
-			}
-		}
-
-		// record which fd to close
-		rdts.currentFD.push_back(newFD);
+	// close fd
+	if ( -1 == close(fd) ) {
+		perror("close-redirect" + fd);
+		exit(-1);
 	}
+
+	// open file
+	if ( -1 == (*newFD = open(argv[*index + 1], FLAG)) ) { 
+		if (errno == EACCES || errno == ENOENT) { 	//FIXME
+			perror(argv[*index + 1]);
+			return false;
+		} else {
+			perror("open-redirect" + fd);
+			exit(-1);
+		}
+	}
+
+	// record which fd to close
+	rdts.currentFD.push_back(newFD);
 
 	return true;
 }
