@@ -33,7 +33,7 @@ struct redirect {
 	int savedSTDERR; // for duping STDERR and saving it
 	int wefd; // when opening new fd in 2 for writing
 
-	int* currentFD;
+	vector<int*> currentFD;
 
 	redirect() {
 		doI_Rdct = false;
@@ -50,20 +50,22 @@ struct redirect {
 		savedSTDERR = -1;
 		wefd = -1;
 		indexER = -1;
-
-		currentFD = NULL;
 	}
 	void closeCurrFDs() {
-		if (currentFD != NULL) {
-			if (-1 == close(*currentFD)) {
-				perror("close");
-				exit(-1);
+		if (!currentFD.empty()) {
+			for (vector<int*>::iterator it = currentFD.begin(); 
+					it != currentFD.end(); it++) {
+				if (-1 == close(*(*it))) {
+					perror("close");
+					exit(-1);
+				}
 			}
-			currentFD = NULL;
+
+			currentFD.clear();
 		}
 	}
 	~redirect() {
-		closeCurrFDs();
+		//closeCurrFDs();
 	}
 };
 
@@ -129,9 +131,9 @@ int main() {
 			return 0; // EXIT command
 		}
 
-		doExec = redirection(argv, rdts, STDIN_FILENO);
-		//doExec = redirection(argv, rdts, STDOUT_FILENO);
-		//doExec = redirection(argv, rdts, STDERR_FILENO);
+		if (rdts.doI_Rdct) doExec = redirection(argv, rdts, STDIN_FILENO);
+		if (rdts.doO_Rdct) doExec = redirection(argv, rdts, STDOUT_FILENO);
+		if (rdts.doE_Rdct) doExec = redirection(argv, rdts, STDERR_FILENO);
 
 		if (doExec) {
 			int pid = fork();
@@ -184,6 +186,7 @@ int main() {
 		}
 
 		comPr.deleteCStrings(commands);
+		//rdts.closeCurrFDs();
 	}
 
 	return 0;
@@ -248,7 +251,7 @@ bool redirection(char** argv, redirect& rdts, const int fd) {
 		}
 
 		// record which fd to close
-		rdts.currentFD = newFD;
+		rdts.currentFD.push_back(newFD);
 	}
 
 	return true;
