@@ -1,135 +1,160 @@
-Script started on Mon 23 Feb 2015 12:07:30 AM PST
+Script started on Mon 23 Feb 2015 12:25:42 AM PST
 ~
-dhand002@hammer $ cs[Kd CS100/firstrepo/rshell/
-~/CS100/firstrepo/rshell
-dhand002@hammer $ vi[K[Kbin/rshell 
-$ cd  cat t1  	#what's in t1
-This is T1!!!!
-$ cat < t1	#basic input redirection                 stdin
-This is T1!!!!
-$ ca  cat > t1	#basic              ls > t2	#        ls -  a   > t2	#basic                cat tt 2
+dhand002@hammer $ cs100
+[0;91m
+===============================================================================
+|                                                                             |
+| You have enabled settings specific for cs100.  Everything you do is being   |
+| recorded to measure your progress in the class.                             |
+|                                                                             |
+| Important commands for the class:                                           |
+|   * calcgrade.sh          displays a detailed breakdown of your grade       |
+|   * typespeed             practice typing unix commands                     |
+|                                                                             |
+| Important commands for general C++ programming:                             |
+|   * make                  don't call g++ manually; let make do the work!    |
+|   * gdb                   the GNU debugger                                  |
+|   * valgrind              get rid of your memory leaks                      |
+|   * cppcheck              static analysis tool                              |
+|   * man                   find help about any syscall / terminal command    |
+|                                                                             |
+===============================================================================
+[0m
+[s%%%%%%%%%%[u[0;32mdhand002[0;36m@[0;32mcs100[0;36m:[0;32m~[0;95m [0;36m$[0m cd CS100/firstrepo/rshell/
+[s%%%%%%%%%%[u[0;32mdhand002[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/firstrepo/rshell[0;95m (redirect) [0;36m$[0m [K[s%%%%%%%%%%[u[0;32mdhand002[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/firstrepo/rshell[0;95m (redirect) [0;36m$[0m [K[s%%%%%%%%%%[u[0;32mdhand002[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/firstrepo/rshell[0;95m (redirect) [0;36m$[0m bin/rshell 
+$ ca  exit
+[s%%%%%%%%%%[u[0;32mdhand002[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/firstrepo/rshell[0;95m (redirect) [0;36m$[0m make
+g++ -o rshell rshell.o
+mv rshell bin
+[s%%%%%%%%%%[u[0;32mdhand002[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/firstrepo/rshell[0;95m (redirect) [0;36m$[0m makebin/rshell 
+$ cat < t1 # 	#basic input
+all.cpp
+a.out
+bin
+ex1.cpp
+existingInputFile
+LICENSE
+Makefile
+newOutputFile1
+newOutputFile2
+README.md
+rshell.o
+src
+statManEx.cpp
+stdErr.cpp
+t1
+t2
+t3
+t3.cpp
+tests
+$ cat     pwd > t2  	#g basic output redirect
+$ cat t2
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+$ cat > t1 < t2  	#mis xing up flags
+$ cat t2 1
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+$ cat 0> t1 1<            ls 2>  1> t1        pwd -dsljfk 2> 1>    r1  t1     - 2> l t1
+$ # tes    Ect  xtre   a credit, showing error output
+$ cat t1
+pwd: invalid option -- 'd'
+Try `pwd --help' for more information.
+$ cat     pwd -dslkfj 2>> t1 #pro   shoi wing append works too
+$ cat t1
+pwd: invalid option -- 'd'
+Try `pwd --help' for more information.
+pwd: invalid option -- 'd'
+Try `pwd --help' for more information.
+$ cat   cat < t1    0< t1 1>> t2	#i showing it works for other                  appending fd works on other operators too
+$ cat t2
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+pwd: invalid option -- 'd'
+Try `pwd --help' for more information.
+pwd: invalid option -- 'd'
+Try `pwd --help' for more information.
+$ cat 0< t        cat   p g g++ all.cpp           cat     g++ all.cpp <  
+$ a.out < t1 >     t2 2> t2 3 #us   	 	#i using all t           testing flags     all fd works
+$ cat t2
 This is COUT
-$ ls > t2	#basic output      stdout
-$ cat t2
-all.cpp
-a.out
-bin
-ex1.cpp
-LICENSE
-Makefile
-README.md
-rshell.o
-src
-statManEx.cpp
-stdErr.cpp
-t1
-t2
-t3
-t3.cpp
-tests
-$ g++ stdErr.cpp 2> t2 3	#basic                            pwd >> t2  	#basic append
-$ cat t2
-all.cpp
-a.out
-bin
-ex1.cpp
-LICENSE
-Makefile
-README.md
-rshell.o
-src
-statManEx.cpp
-stdErr.cpp
-t1
-t2
-t3
-t3.cpp
-tests
-/home/csmajs/dhand002/CS100/firstrepo/rshell
-$ cat > t1 < t2	#syntax par     x      syntax translates into righ    correct pipes
-$ cat t1	#should have t2's contex nts
-all.cpp
-a.out
-bin
-ex1.cpp
-LICENSE
-Makefile
-README.md
-rshell.o
-src
-statManEx.cpp
-stdErr.cpp
-t1
-t2
-t3
-t3.cpp
-tests
-/home/csmajs/dhand002/CS100/firstrepo/rshell
-$ c ls | echo         echo everything is awesome | cat  	#test pipe         basic piping
-10 11
-
+$ cat t3
+THIS IS (Whisper) stderr
+pwd:
+$ ca  cat t1
+pwd: invalid option -- 'd'
+Try `pwd --help' for more information.
+pwd: invalid option -- 'd'
+Try `pwd --help' for more information.
+$ #a cin works     took pwd:  , and co  e t2 and t3 got respective in  o stdout and stderr
+$ cat     echo everything is awesome | t1  cat
 everything is awesome
-$ cat     echo everything is awesome | cat > t2  	#combing ing pipe and output
-11 12
-
-$ cat t2
-everything is awesome
-$ c ls  ec  cat < t1 | tail	#combing in    i         l | hea                     echo everything is awesome | tail    cat >                                  cat < t2,    | cat        t2 | cat | echo
-12 13
-
-everything is awesome
-12 13
-
-
-$ cat   cat < t2 | cat | echo  	 > 2   t1  	#testing multiple pipes and falgs    lags
-14 15
-
-14 15
-
-$ p   cat t1
-everything is awesome
-
-$ echo      #m left t       #testing purposed #'s l in piping code
-$ cat < existingInputFile | tr A-Z a-z | tee newOutputFile1 | tr a-z A-Z > newOutputFile2
-existingInputFile: No such file or directory
-$ cat > existingInputFile
-THIS FILE NOW EXIST                   #using example from lab   hw to test piping and redirection
-
-#doghouse di iaries
-$ cat < existingInputFile | tr A-Z a-z | tee newOutputFile1 | tr a-z A-Z > newOutputFile2
-18 19
-
-18 19
-
-18 19
-
-$ p   cat newOutputFile2
-#using example from hw to test piping and redirection
-
-#doghouse diaries
-$ # cat < existingFil   InputFile # 	#misunderstood test    previous test, will l redo now.
-#using example from hw to test piping and redirection
-
-#doghouse diaries
-$ ^[[A^[[D        cat > existingInputFile
-A-z   Z A-Z
-
-A-Z
-#d  $ cat < existingInputFile | tr A-Z a-z | tee newOutputFile1 | tr a-z A-Z > newOutputFile2
-22 23
-
-22 23
-
-22 23
-
-$ cat newOutputFile1  	#te  see if test works ed
-$ cat newOutputFile2  
+jdk
+jdk
+$ # t  basic pipe test
+$ echo everyting is awesome | tr a 'awesome' 'whatthe' | cat #b multiple chain piping
+everyting is awesome
+jk
+jk
+$ #piping may still have issues
+$ ^^?  cat < existingInputFile | tr A-Z a-z | tee newOutputFile1 | tr a-z A-Z > newOutputFile2
+$ cat newOutputFile1
+$ cat newOutputFile2
 A-Z A-Z
 
 A-Z
-$ quit    exit
-~/CS100/firstrepo/rshell
-dhand002@hammer $ quit[K[K[K[Kexit
+$ e c # # t  tr   cat >     > cat newOutputFiles 2 | cat > newOutputFile1 	#mixing pipes and flag    redirection
+$ cat newOutputFiles 2 1
+A-Z A-Z
+
+A-Z
+$ cat   ls | c echo   | cat > t1    - 1> newOutputFile1
+$ cat newOutputFile1
+all.cpp
+a.out
+bin
+ex1.cpp
+existingInputFile
+LICENSE
+Makefile
+newOutputFile1
+newOutputFile2
+README.md
+rshell.o
+src
+statManEx.cpp
+stdErr.cpp
+t1
+t2
+t3
+t3.cpp
+tests
+
+$ cat < newOutputFile1 | grep tests | tr A-X Z   a-z A-Z >   | cat > t1
+$ # testing longer tests 
+$ cat t1
+all.cpp
+a.out
+bin
+ex1.cpp
+existingInputFile
+LICENSE
+Makefile
+newOutputFile1
+newOutputFile2
+README.md
+rshell.o
+src
+statManEx.cpp
+stdErr.cpp
+t1
+t2
+t3
+t3.cpp
+tests
+
+$ exit
+[s%%%%%%%%%%[u[0;32mdhand002[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/firstrepo/rshell[0;95m (redirect) [0;36m$[0m exit
+exit
+~
+dhand002@hammer $ exit
 exit
 
-Script done on Mon 23 Feb 2015 12:19:41 AM PST
+Script done on Mon 23 Feb 2015 12:37:54 AM PST
