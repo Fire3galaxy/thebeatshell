@@ -1,0 +1,135 @@
+Script started on Mon 23 Feb 2015 12:07:30 AM PST
+~
+dhand002@hammer $ cs[Kd CS100/firstrepo/rshell/
+~/CS100/firstrepo/rshell
+dhand002@hammer $ vi[K[Kbin/rshell 
+$ cd  cat t1  	#what's in t1
+This is T1!!!!
+$ cat < t1	#basic input redirection                 stdin
+This is T1!!!!
+$ ca  cat > t1	#basic              ls > t2	#        ls -  a   > t2	#basic                cat tt 2
+This is COUT
+$ ls > t2	#basic output      stdout
+$ cat t2
+all.cpp
+a.out
+bin
+ex1.cpp
+LICENSE
+Makefile
+README.md
+rshell.o
+src
+statManEx.cpp
+stdErr.cpp
+t1
+t2
+t3
+t3.cpp
+tests
+$ g++ stdErr.cpp 2> t2 3	#basic                            pwd >> t2  	#basic append
+$ cat t2
+all.cpp
+a.out
+bin
+ex1.cpp
+LICENSE
+Makefile
+README.md
+rshell.o
+src
+statManEx.cpp
+stdErr.cpp
+t1
+t2
+t3
+t3.cpp
+tests
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+$ cat > t1 < t2	#syntax par     x      syntax translates into righ    correct pipes
+$ cat t1	#should have t2's contex nts
+all.cpp
+a.out
+bin
+ex1.cpp
+LICENSE
+Makefile
+README.md
+rshell.o
+src
+statManEx.cpp
+stdErr.cpp
+t1
+t2
+t3
+t3.cpp
+tests
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+$ c ls | echo         echo everything is awesome | cat  	#test pipe         basic piping
+10 11
+
+everything is awesome
+$ cat     echo everything is awesome | cat > t2  	#combing ing pipe and output
+11 12
+
+$ cat t2
+everything is awesome
+$ c ls  ec  cat < t1 | tail	#combing in    i         l | hea                     echo everything is awesome | tail    cat >                                  cat < t2,    | cat        t2 | cat | echo
+12 13
+
+everything is awesome
+12 13
+
+
+$ cat   cat < t2 | cat | echo  	 > 2   t1  	#testing multiple pipes and falgs    lags
+14 15
+
+14 15
+
+$ p   cat t1
+everything is awesome
+
+$ echo      #m left t       #testing purposed #'s l in piping code
+$ cat < existingInputFile | tr A-Z a-z | tee newOutputFile1 | tr a-z A-Z > newOutputFile2
+existingInputFile: No such file or directory
+$ cat > existingInputFile
+THIS FILE NOW EXIST                   #using example from lab   hw to test piping and redirection
+
+#doghouse di iaries
+$ cat < existingInputFile | tr A-Z a-z | tee newOutputFile1 | tr a-z A-Z > newOutputFile2
+18 19
+
+18 19
+
+18 19
+
+$ p   cat newOutputFile2
+#using example from hw to test piping and redirection
+
+#doghouse diaries
+$ # cat < existingFil   InputFile # 	#misunderstood test    previous test, will l redo now.
+#using example from hw to test piping and redirection
+
+#doghouse diaries
+$ ^[[A^[[D        cat > existingInputFile
+A-z   Z A-Z
+
+A-Z
+#d  $ cat < existingInputFile | tr A-Z a-z | tee newOutputFile1 | tr a-z A-Z > newOutputFile2
+22 23
+
+22 23
+
+22 23
+
+$ cat newOutputFile1  	#te  see if test works ed
+$ cat newOutputFile2  
+A-Z A-Z
+
+A-Z
+$ quit    exit
+~/CS100/firstrepo/rshell
+dhand002@hammer $ quit[K[K[K[Kexit
+exit
+
+Script done on Mon 23 Feb 2015 12:19:41 AM PST
