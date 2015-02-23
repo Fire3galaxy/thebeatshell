@@ -71,7 +71,7 @@ int main() {
 		vector<char*> commands;
 		comParse comPr;
 		do {
-			cerr << "$ " << flush;
+			cout << "$ " << flush;
 			
 			string input = "";
 			getline(cin, input);	// Get command
@@ -84,17 +84,34 @@ int main() {
 		int timeout = 0;
 		vector<char*> realcom; // command + arguments - input redirection & semicolon
 		vector< vector<char*> > realcomsP;
+		vector<bool> isPipe;
+		bool setPipe = false; // pipe will only be made if needed
 		argv = &commands.at(0);
 		redirect rdts;	// contains redirection flags and values
 
 		for (unsigned int i = 0; i < commands.size() - 1; i++) { // NULL at end
 			char* c = commands.at(i);
+			// if semicolon or pipe, split command into two
 			if ( strcmp(commands.at(i), ";") == 0) {
 				delete[] commands.at(i);
 				argv[i] = NULL;
 				timeout = 1;
 
-				break;
+				realcom.push_back(NULL);
+				realcomsP.push_back(realcom);
+				realcom.clear();
+				isPipe.push_back(false);
+			} else if (strcmp(c, "|") == 0) {
+				delete[] commands.at(i);
+				argv[i] = NULL;
+				timeout = 1;
+
+				realcom.push_back(NULL);
+				realcomsP.push_back(realcom);
+				realcom.clear();
+				isPipe.push_back(true);
+
+				setPipe = true;
 			} else if (strchr(c, '<') != NULL) {
 				int fd = -1;
 				// FIXME: Currently assumes 1 digit fd. K for assignment.
@@ -141,15 +158,22 @@ int main() {
 			} 
 
 			if (timeout != 0) timeout--;
-			else if (strcmp(c, "|") == 0) {
-				realcom.push_back(NULL);
-				realcomsP.push_back(realcom);
-				realcom.clear();
-			} else realcom.push_back(commands.at(i));
+			else realcom.push_back(commands.at(i));
 		}
 
 		realcom.push_back(NULL);
 		realcomsP.push_back(realcom);
+		isPipe.push_back(false);
+
+		// Test produces weird results but gdb says contents are correct...wth?
+		//for (unsigned int i = 0; i < realcomsP.size(); i++) {
+		//	cerr << i << ": ";
+		//	for (unsigned int j = 0; j < realcomsP.at(i).size(); j++) {
+		//		cerr << realcomsP.at(1).at(j) << ' ';
+		//	}
+		//	cerr << endl;
+		//}
+		//exit(0);
 
 		/* Confusing as heck, let me explain!
 		 * char const* means pointer to a constant char
@@ -160,26 +184,52 @@ int main() {
 		 */
 		//char const* const* c_arr = &commands[0]; // even if Not necessary: keep as really cool discovery!
 
-		char ex[5] = "exit";
-		if (strcmp(argv[0], ex) == 0) {
-			comPr.deleteCStrings(commands); // Has heap allocated memory, always should be dealt with
-			return 0; // EXIT command
-		}
-
 		if (doExec != false) doExec = setRdct(argv, rdts);
 		//if (rdts.doO_Rdct) doExec = redirection(argv, rdts, STDOUT_FILENO);
 		//if (rdts.doE_Rdct) doExec = redirection(argv, rdts, STDERR_FILENO);
+		char ex[5] = "exit";
+		int fdpipe[2];
+		int savefdpipe[2];
+		bool resetPipe = false;
 
-		unsigned int realcomsI = 0;
-		argv = &realcomsP.at(realcomsI).at(0); // initialize to char**
+		if (setPipe) {
+			if (-1 == pipe(fdpipe)) {
+				perror("pipe");
+				exit(-1);
+			}
+		}
 
-		if (doExec) {
+		for (unsigned int i = 0; doExec && i < realcomsP.size(); i++) {
+			argv = &realcomsP.at(i).at(0); // initialize to char**
+
+			if (strcmp(argv[0], ex) == 0) {
+				comPr.deleteCStrings(commands); // Has heap allocated memory, always should be dealt with
+				return 0; // EXIT command
+			}
+
 			int pid = fork();
 			if (pid == -1) {	// Error in fork
 				perror("error in fork");
 				comPr.deleteCStrings(commands);
 				exit(-1);
 			} else if (pid == 0) {	// Child Process
+				// If piping, this command outputs to pipe
+				if (isPipe.at(i)) {
+					// move output's fd
+					if (-1 == (savefdpipe[1] = dup(STDOUT_FILENO))) {
+						perror("dup w/ pipe");
+						exit(-1);
+					}
+					// place pipe in output
+					if (-1 == (fdpipe[1] = dup(fdpipe[1]))) {
+						perror("dup w/ pipe");
+						exit(-1);
+					}
+
+					cerr << savefdpipe[1] << " " << fdpipe[1] << endl << endl;
+				}
+
+
 				if (-1 == execvp(argv[0], argv)) {
 					// All children need to exit! (forgot this)
 					if (errno == EACCES) { // Access denied
@@ -196,15 +246,61 @@ int main() {
 						exit(-1);
 					}
 				}
+
+				// if last command piped, next command's input is from pipe
+				if (isPipe.at(i)) {
+					// put pipe back up to later descr.
+					if (-1 == (fdpipe[1] = dup(fdpipe[1]))) {
+						perror("dup w/ pipe");
+						exit(-1);
+					}
+					// put output back in place
+					if (-1 == (savefdpipe[1] = dup(STDOUT_FILENO))) {
+						perror("dup w/ pipe");
+						exit(-1);
+					}
+					// save input
+					if (-1 == (fdpipe[0] = dup(fdpipe[0]))) {
+						perror("dup w/ pipe");
+						exit(-1);
+					}
+					// put pipe into input
+					if (-1 == (savefdpipe[0] = dup(STDIN_FILENO))) {
+						perror("dup w/ pipe");
+						exit(-1);
+					}
+
+					resetPipe = true;
+				} else if (resetPipe) {
+					// put pipe back up to later descr.
+					if (-1 == (fdpipe[0] = dup(fdpipe[0]))) {
+						perror("dup w/ pipe");
+						exit(-1);
+					}
+					// put input back in place
+					if (-1 == (savefdpipe[0] = dup(STDIN_FILENO))) {
+						perror("dup w/ pipe");
+						exit(-1);
+					}
+
+					resetPipe = false;
+				}
+
 			} else if (pid > 0) { // parent!
 				if (-1 == waitpid(pid, 0, 0))
 					perror("wait");
 				if (errno != 0 && errno != EACCES && errno != ENOEXEC && errno != ENOENT)
 					exit(-1);
 			}
+		}
 
-			realcomsI++;
-			if (realcomsI < realcomsP.size()) argv = &realcomsP.at(realcomsI).at(0);
+		if (setPipe) {
+			for (int i = 0; i < 2; i++) {
+				if (-1 == close(fdpipe[i])) {
+					perror("pipe");
+					exit(-1);
+				}
+			}
 		}
 
 		for (unsigned int i = 0; i < rdts.v_savedP.size(); i++) {
