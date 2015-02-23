@@ -225,8 +225,6 @@ int main() {
 						perror("dup w/ pipe");
 						exit(-1);
 					}
-
-					cerr << savefdpipe[1] << " " << fdpipe[1] << endl << endl;
 				}
 
 
