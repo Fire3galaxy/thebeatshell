@@ -79,6 +79,8 @@ int main() {
 			commands = comPr.parseLine(input);
 		} while (commands.size() == 1); // if empty line, repeat req for command. sz 1 = just NULL delim.
 
+		bool doExec = true; // If false, do not fork and exec command
+
 		int timeout = 0;
 		vector<char*> realcom; // command + arguments - input redirection & semicolon
 		argv = &commands.at(0);
@@ -105,8 +107,9 @@ int main() {
 				rdts.v_opfd.push_back( pair<int,int>(I_REDIRECT, fd) ); // op, fd
 
 				if ( !(i + 1 < commands.size()) ) {	// next arg must exist (filename)
-					cerr << "rshell: syntax error at <";
-					exit(-1);
+					cerr << "rshell: syntax error at <\n";
+					doExec = false;
+					break;
 				}
 				rdts.v_ind.push_back(i + 1); // index
 			} else if (strchr(c, '>') != NULL) {
@@ -115,9 +118,12 @@ int main() {
 				// Convert char to int with - 48
 				if (isdigit(commands.at(i)[0])) fd = commands.at(i)[0] - 48; // num before operator
 
-				//if (strstr(commands.at(i), ">>>") != NULL) 
-				//	rdts.v_opfd.push_back( pair<int,int>(ORD_APPEND, fd) ); // op, fd
-				if (strstr(commands.at(i), ">>") != NULL) 
+				if (strstr(commands.at(i), ">>>") != NULL) {
+					cerr << "rshell: syntax error at >\n";
+					doExec = false;
+					break;
+				}
+				else if (strstr(commands.at(i), ">>") != NULL) 
 					rdts.v_opfd.push_back( pair<int,int>(ORD_APPEND, fd) ); // op, fd
 				else rdts.v_opfd.push_back( pair<int,int>(O_REDIRECT, fd) ); // op, fd
 
@@ -148,15 +154,13 @@ int main() {
 		 */
 		//char const* const* c_arr = &commands[0]; // even if Not necessary: keep as really cool discovery!
 
-		bool doExec = true; // If false, do not fork and exec command
-
 		char ex[5] = "exit";
 		if (strcmp(argv[0], ex) == 0) {
 			comPr.deleteCStrings(commands); // Has heap allocated memory, always should be dealt with
 			return 0; // EXIT command
 		}
 
-		doExec = setRdct(argv, rdts);
+		if (doExec != false) doExec = setRdct(argv, rdts);
 		//if (rdts.doO_Rdct) doExec = redirection(argv, rdts, STDOUT_FILENO);
 		//if (rdts.doE_Rdct) doExec = redirection(argv, rdts, STDERR_FILENO);
 
@@ -251,7 +255,8 @@ bool redirection(char** argv, redirect& rdts, const int id) {
 	}
 
 	// open file
-	if ( -1 == (newFD = open(argv[index], FLAG)) ) { 
+	// if create file, then give read write by default
+	if ( -1 == (newFD = open(argv[index], FLAG, S_IRUSR | S_IWUSR)) ) {
 		if (errno == EACCES || errno == ENOENT) { 	//FIXME
 			perror(argv[index]);
 			rdts.v_pfd.push_back(rdts.v_opfd.at(id).second); // Saving new fd to close later
