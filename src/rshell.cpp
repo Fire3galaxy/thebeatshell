@@ -85,16 +85,18 @@ int main() {
 		redirect rdts;	// contains redirection flags and values
 
 		for (unsigned int i = 0; i < commands.size() - 1; i++) { // NULL at end
+			char* c = commands.at(i);
 			if ( strcmp(commands.at(i), ";") == 0) {
 				delete[] commands.at(i);
 				argv[i] = NULL;
 				timeout = 1;
 
 				break;
-			} else if (strchr(commands.at(i), '<') != NULL) {
+			} else if (strchr(c, '<') != NULL) {
 				int fd = -1;
 				// FIXME: Currently assumes 1 digit fd. K for assignment.
-				if (isdigit(commands.at(i)[0])) fd = commands.at(i)[0]; // num before operator
+				// Convert char to int with - 48
+				if (isdigit(commands.at(i)[0])) fd = commands.at(i)[0] - 48; // num before operator
 
 				delete[] commands.at(i);
 				argv[i] = NULL;
@@ -107,10 +109,11 @@ int main() {
 					exit(-1);
 				}
 				rdts.v_ind.push_back(i + 1); // index
-			} else if (strchr(commands.at(i), '>') != NULL) {
+			} else if (strchr(c, '>') != NULL) {
 				int fd = -1;
 				// FIXME: Currently assumes 1 digit fd. K for assignment.
-				if (isdigit(commands.at(i)[0])) fd = commands.at(i)[0]; // num before operator
+				// Convert char to int with - 48
+				if (isdigit(commands.at(i)[0])) fd = commands.at(i)[0] - 48; // num before operator
 
 				//if (strstr(commands.at(i), ">>>") != NULL) 
 				//	rdts.v_opfd.push_back( pair<int,int>(ORD_APPEND, fd) ); // op, fd
@@ -251,6 +254,7 @@ bool redirection(char** argv, redirect& rdts, const int id) {
 	if ( -1 == (newFD = open(argv[index], FLAG)) ) { 
 		if (errno == EACCES || errno == ENOENT) { 	//FIXME
 			perror(argv[index]);
+			rdts.v_pfd.push_back(rdts.v_opfd.at(id).second); // Saving new fd to close later
 			return false;
 		} else {
 			perror("open-redirect" + rdts.v_opfd.at(id).second);
