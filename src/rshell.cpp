@@ -93,6 +93,7 @@ int main() {
 				break;
 			} else if (strchr(commands.at(i), '<') != NULL) {
 				int fd = -1;
+				// FIXME: Currently assumes 1 digit fd. K for assignment.
 				if (isdigit(commands.at(i)[0])) fd = commands.at(i)[0]; // num before operator
 
 				delete[] commands.at(i);
@@ -106,14 +107,27 @@ int main() {
 					exit(-1);
 				}
 				rdts.v_ind.push_back(i + 1); // index
-			} else if (strcmp(commands.at(i), ">") == 0
-					|| strcmp(commands.at(i), "1>") == 0) {
+			} else if (strcmp(commands.at(i), ">") == 0) {
+				int fd = -1;
+				// FIXME: Currently assumes 1 digit fd. K for assignment.
+				if (isdigit(commands.at(i)[0])) fd = commands.at(i)[0]; // num before operator
+
+				//if (strstr(commands.at(i), ">>>") != NULL) 
+				//	rdts.v_opfd.push_back( pair<int,int>(ORD_APPEND, fd) ); // op, fd
+				if (strstr(commands.at(i), ">>") != NULL) 
+					rdts.v_opfd.push_back( pair<int,int>(ORD_APPEND, fd) ); // op, fd
+				else rdts.v_opfd.push_back( pair<int,int>(O_REDIRECT, fd) ); // op, fd
+
 				delete[] commands.at(i);
 				argv[i] = NULL;
 
 				timeout = 2;	// do not push this or next arg
-				rdts.doO_Rdct = true;
-				rdts.indexOR = i;
+
+				if ( !(i + 1 < commands.size()) ) {	// next arg must exist (filename)
+					cerr << "rshell: syntax error at <";
+					exit(-1);
+				}
+				rdts.v_ind.push_back(i + 1); // index
 			} 
 
 			if (timeout != 0) timeout--;

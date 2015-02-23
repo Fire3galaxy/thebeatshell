@@ -55,11 +55,11 @@ public:
 					exit(-1);
 				}
 				
-				if (!words.empty() && (inpind - 1 < 0 || isdigit(com.at(inpind - 1)))) { 	// #> syntax
-					if (inpind - 2 < 0  || isspace(com.at(inpind - 2)))
+				if (!words.empty() && (inpInd - 1 < 0 || isdigit(com.at(inpInd - 1)))) { 	// #> syntax
+					if (inpInd - 2 < 0  || isspace(com.at(inpInd - 2)))
 						words.back() += *it;
 					else words.push_back(*it);
-				} else if (!words.empty() && inpind - 1 >= 0 && com.at(inpind - 1) == '>') {	// >> syntax
+				} else if (!words.empty() && inpInd - 1 >= 0 && com.at(inpInd - 1) == '>') {	// >> syntax
 					words.back() += *it;
 				} else words.push_back(*it);
 
