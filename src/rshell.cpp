@@ -231,12 +231,16 @@ bool redirection(char** argv, redirect& rdts, const int id) {
 	int FLAG;
 
 	// 0 == INPUT, 1 == OUTPUT
-	if (rdts.v_opfd.at(id).first == 0) {
+	if (rdts.v_opfd.at(id).first == I_REDIRECT) {
 		FLAG = O_RDONLY;
 		if (rdts.v_opfd.at(id).second == -1) 
 			rdts.v_opfd.at(id).second = 0; // DEFAULT for input operator
-	} else if (rdts.v_opfd.at(id).first == 1) {
+	} else if (rdts.v_opfd.at(id).first == O_REDIRECT) {
 		FLAG = O_WRONLY | O_CREAT | O_TRUNC;
+		if (rdts.v_opfd.at(id).second == -1) 
+			rdts.v_opfd.at(id).second = 1; // DEFAULT for output operator
+	} else if (rdts.v_opfd.at(id).first == ORD_APPEND) {
+		FLAG = O_WRONLY | O_CREAT | O_APPEND;
 		if (rdts.v_opfd.at(id).second == -1) 
 			rdts.v_opfd.at(id).second = 1; // DEFAULT for output operator
 	} 
