@@ -107,7 +107,7 @@ int main() {
 					exit(-1);
 				}
 				rdts.v_ind.push_back(i + 1); // index
-			} else if (strcmp(commands.at(i), ">") == 0) {
+			} else if (strchr(commands.at(i), '>') != NULL) {
 				int fd = -1;
 				// FIXME: Currently assumes 1 digit fd. K for assignment.
 				if (isdigit(commands.at(i)[0])) fd = commands.at(i)[0]; // num before operator
@@ -123,7 +123,7 @@ int main() {
 
 				timeout = 2;	// do not push this or next arg
 
-				if ( !(i + 1 < commands.size()) ) {	// next arg must exist (filename)
+				if ( !(i + 1 < commands.size() - 1) ) {	// next arg must exist (filename)
 					cerr << "rshell: syntax error at <";
 					exit(-1);
 				}
