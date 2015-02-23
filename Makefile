@@ -4,7 +4,6 @@ objects = rshell.o
 
 all: $(objects) | bin
 	g++ -o rshell rshell.o
-	g++ -o ls ls.o
 	mv rshell bin
 
 rshell: rshell.o | bin
