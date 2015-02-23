@@ -83,6 +83,7 @@ int main() {
 
 		int timeout = 0;
 		vector<char*> realcom; // command + arguments - input redirection & semicolon
+		vector< vector<char*> > realcomsP;
 		argv = &commands.at(0);
 		redirect rdts;	// contains redirection flags and values
 
@@ -140,10 +141,15 @@ int main() {
 			} 
 
 			if (timeout != 0) timeout--;
-			else realcom.push_back(commands.at(i));
+			else if (strcmp(c, "|") == 0) {
+				realcom.push_back(NULL);
+				realcomsP.push_back(realcom);
+				realcom.clear();
+			} else realcom.push_back(commands.at(i));
 		}
 
 		realcom.push_back(NULL);
+		realcomsP.push_back(realcom);
 
 		/* Confusing as heck, let me explain!
 		 * char const* means pointer to a constant char
@@ -164,7 +170,8 @@ int main() {
 		//if (rdts.doO_Rdct) doExec = redirection(argv, rdts, STDOUT_FILENO);
 		//if (rdts.doE_Rdct) doExec = redirection(argv, rdts, STDERR_FILENO);
 
-		argv = &realcom.at(0); // initialize to char**
+		unsigned int realcomsI = 0;
+		argv = &realcomsP.at(realcomsI).at(0); // initialize to char**
 
 		if (doExec) {
 			int pid = fork();
@@ -190,11 +197,14 @@ int main() {
 					}
 				}
 			} else if (pid > 0) { // parent!
-				if (-1 == wait(0))
+				if (-1 == waitpid(pid, 0, 0))
 					perror("wait");
 				if (errno != 0 && errno != EACCES && errno != ENOEXEC && errno != ENOENT)
 					exit(-1);
 			}
+
+			realcomsI++;
+			if (realcomsI < realcomsP.size()) argv = &realcomsP.at(realcomsI).at(0);
 		}
 
 		for (unsigned int i = 0; i < rdts.v_savedP.size(); i++) {
