@@ -6,10 +6,12 @@
 #include <errno.h>
 #include <vector>
 #include "comParse.h"
+#include "env.h"
 #include <cstring>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <signal.h>
 
 using namespace boost;
 using namespace std;
@@ -17,6 +19,23 @@ using namespace std;
 #define I_REDIRECT 0
 #define O_REDIRECT 1
 #define ORD_APPEND 2
+ 
+void input_sigHandler(int param) {
+	if (param == SIGINT) {
+		char currentDir[512];
+		if (NULL == (getcwd(currentDir, 512))) { // Currently outputs error that directory is too long. Don't like this FIXME
+			perror("getcwd");
+			currentDir[0] = '\0';
+		}
+		cout << '\n' << currentDir << " $ " << flush;
+	}
+}
+
+void quit_sigHandler(int param) {
+	if (param == SIGINT) {
+		cout << endl;
+	}
+}
 
 struct redirect;
 bool redirection(char** argv, redirect& rdts, const int id);
@@ -60,18 +79,24 @@ struct redirect {
 			currentFD.clear();
 		}
 	}
-	~redirect() {
-		//closeCurrFDs();
-	}
 };
 
 int main() {
+	env e;
 	while (true) {
+		signal(SIGINT, input_sigHandler);
 		char** argv = NULL;
 		vector<char*> commands;
 		comParse comPr;
+
+		char currentDir[512]; // Current Working Directory
+		if (NULL == (getcwd(currentDir, 512))) { // Currently outputs error that directory is too long. Don't like this FIXME
+			perror("getcwd");
+			currentDir[0] = '\0';
+		}
+
 		do {
-			cout << "$ " << flush;
+			cout << currentDir << " $ " << flush;
 			
 			string input = "";
 			getline(cin, input);	// Get command
@@ -81,6 +106,8 @@ int main() {
 
 		bool doExec = true; // If false, do not fork and exec command
 
+		//MASSIVE SECTION OF CODE DEDICATED TO PARSING FOR SEMI, PIPES
+		//-------------------------------------------------------------------------
 		int timeout = 0;
 		vector<char*> realcom; // command + arguments - input redirection & semicolon
 		vector< vector<char*> > realcomsP;
@@ -204,6 +231,8 @@ int main() {
 			}
 		}
 
+		signal(SIGINT, quit_sigHandler);
+
 		for (unsigned int i = 0; doExec && i < realcomsP.size(); i++) {
 			argv = &realcomsP.at(i).at(0); // initialize to char**
 
@@ -218,6 +247,10 @@ int main() {
 				comPr.deleteCStrings(commands);
 				exit(-1);
 			} else if (pid == 0) {	// Child Process
+				signal(SIGINT, SIG_DFL);
+
+				if (0 == strcmp(argv[0], "cd")) exit(0); // cd: PARENT PROCESS
+
 				// If piping, this command outputs to pipe
 				if (isPipe.at(i)) {
 					// move output's fd
@@ -232,21 +265,25 @@ int main() {
 					}
 				}
 
-				if (-1 == execvp(argv[0], argv)) {
+				string fullargv; 	// Get PATH var and append program to it
+				const string path = e.getpath(argv[0]);
+				fullargv.append(path);
+				fullargv.append("/");
+				fullargv.append(argv[0]);
+				
+				if (-1 == execv(fullargv.c_str(), argv)) {
 					// All children need to exit! (forgot this)
 					if (errno == EACCES) { // Access denied
 						perror(argv[0]);
-						exit(-1);
-					} else if (errno == ENOEXEC) { // Not Exec
+					} else if (errno == ENOEXEC) { // Not Executable
 						perror(argv[0]);
-						exit(-1);
 					} else if (errno == ENOENT) { // Does not exist
 						perror(argv[0]);
-						exit(-1);
 					} else {
-						perror("error in execvp");
-						exit(-1);
+						perror("error in execv");
 					}
+
+					exit(-1);
 				}
 
 				// if last command piped, next command's input is from pipe
@@ -288,11 +325,17 @@ int main() {
 					resetPipe = false;
 				}
 
+				exit(0);
 			} else if (pid > 0) { // parent!
 				if (-1 == waitpid(pid, 0, 0))
 					perror("wait");
 				if (errno != 0 && errno != EACCES && errno != ENOEXEC && errno != ENOENT)
 					exit(-1);
+				if (0 == strcmp(argv[0], "cd")) { // cd: PARENT PROCESS
+					if (-1 == chdir(argv[1])) {
+						perror("rshell: cd");
+					}
+				}
 			}
 		}
 
@@ -325,6 +368,8 @@ int main() {
 
 
 bool setRdct(char** argv, redirect& rdts) {
+	if (rdts.v_opfd.empty()) return true;
+
 	bool doExec = true;
 	for (unsigned int i = 0; i < rdts.v_opfd.size(); i++)
 		doExec = redirection(argv, rdts, i) ? doExec : false; // if false, stay false

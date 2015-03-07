@@ -10,7 +10,7 @@ rshell: rshell.o | bin
 	g++ $(CXXFLAGS) -o rshell rshell.o 
 	mv rshell bin
 
-rshell.o: comParse.h
+rshell.o: comParse.h env.h
 
 ls: ls.o | bin
 	g++ $(CXXFLAGS) -o ls ls.o
