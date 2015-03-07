@@ -143,7 +143,12 @@ int main() {
 				}
 				else if (strstr(commands.at(i), ">>") != NULL) 
 					rdts.v_opfd.push_back( pair<int,int>(ORD_APPEND, fd) ); // op, fd
-				else rdts.v_opfd.push_back( pair<int,int>(O_REDIRECT, fd) ); // op, fd
+				else {
+					rdts.v_opfd.push_back( pair<int,int>(O_REDIRECT, fd) ); // op, fd
+//					c = commands.at(i - 1);
+//					if (i - 1 < 0 || strcmp( c, ":" ) == 0) // should truncate file if :>
+//						realcom.pop_back();
+				}
 
 				delete[] commands.at(i);
 				argv[i] = NULL;
@@ -221,12 +226,11 @@ int main() {
 						exit(-1);
 					}
 					// place pipe in output
-					if (-1 == (fdpipe[1] = dup(fdpipe[1]))) {
+					if (-1 == dup2(fdpipe[1], STDOUT_FILENO)) {
 						perror("dup w/ pipe");
 						exit(-1);
 					}
 				}
-
 
 				if (-1 == execvp(argv[0], argv)) {
 					// All children need to exit! (forgot this)
@@ -247,36 +251,36 @@ int main() {
 
 				// if last command piped, next command's input is from pipe
 				if (isPipe.at(i)) {
-					// put pipe back up to later descr.
-					if (-1 == (fdpipe[1] = dup(fdpipe[1]))) {
+					// put output back in place
+					if (-1 == dup2(savefdpipe[1],STDOUT_FILENO)) {
 						perror("dup w/ pipe");
 						exit(-1);
 					}
-					// put output back in place
-					if (-1 == (savefdpipe[1] = dup(STDOUT_FILENO))) {
-						perror("dup w/ pipe");
+					// close newly dup'ed output
+					if (-1 == (close(savefdpipe[1]))) {
+						perror("close w/ pipe");
 						exit(-1);
 					}
 					// save input
-					if (-1 == (fdpipe[0] = dup(fdpipe[0]))) {
+					if (-1 == (savefdpipe[0] = dup(STDIN_FILENO))) {
 						perror("dup w/ pipe");
 						exit(-1);
 					}
 					// put pipe into input
-					if (-1 == (savefdpipe[0] = dup(STDIN_FILENO))) {
+					if (-1 == dup2(fdpipe[0],STDIN_FILENO)) {
 						perror("dup w/ pipe");
 						exit(-1);
 					}
 
 					resetPipe = true;
 				} else if (resetPipe) {
-					// put pipe back up to later descr.
-					if (-1 == (fdpipe[0] = dup(fdpipe[0]))) {
+					// put input back in place
+					if (-1 == dup2(savefdpipe[0],STDIN_FILENO)) {
 						perror("dup w/ pipe");
 						exit(-1);
 					}
-					// put input back in place
-					if (-1 == (savefdpipe[0] = dup(STDIN_FILENO))) {
+					// close newly dup'ed input
+					if (-1 == (close(savefdpipe[0]))) {
 						perror("dup w/ pipe");
 						exit(-1);
 					}
@@ -295,7 +299,7 @@ int main() {
 		if (setPipe) {
 			for (int i = 0; i < 2; i++) {
 				if (-1 == close(fdpipe[i])) {
-					perror("pipe");
+					perror("close pipe");
 					exit(-1);
 				}
 			}
@@ -304,6 +308,10 @@ int main() {
 		for (unsigned int i = 0; i < rdts.v_savedP.size(); i++) {
 			if (-1 == dup2(rdts.v_savedP.at(i), rdts.v_pfd.at(i))) {	// Restore saved fds
 				perror("dup2");
+				exit(-1);
+			}
+			if (-1 == close(rdts.v_savedP.at(i))) {	// Restore saved fds
+				perror("close");
 				exit(-1);
 			}
 		}
