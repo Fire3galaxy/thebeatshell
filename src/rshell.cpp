@@ -247,7 +247,7 @@ int main() {
 				perror("error in fork");
 				comPr.deleteCStrings(commands);
 				exit(-1);
-			} else if (pid == 0) {	// Child Process
+			} else if (pid == 0) {	// child Process
 				signal(SIGINT, SIG_DFL);
 				signal(SIGTSTP, SIG_DFL);
 
@@ -345,7 +345,11 @@ int main() {
 
 				exit(0);
 			} else if (pid > 0) { // parent!
-				if (-1 == waitpid(pid, 0, 0))
+				// Ctrl Z: WUNTRACED is an option that lets the parent wait for processes that
+				// have stopped too, not just terminated.
+				// If stopped, add its pid to a queue of stopped pids and use kill(pid, SIGCONT) 
+				// to continue it if user enters fg or bg (don't wait if bg, but keep process in queue)
+				if (-1 == waitpid(pid, 0, WUNTRACED))
 					perror("wait");
 				if (errno != 0 && errno != EACCES && errno != ENOEXEC && errno != ENOENT)
 					exit(-1);
