@@ -29,6 +29,7 @@ void input_sigHandler(int param) {
 		}
 		cout << '\n' << currentDir << " $ " << flush;
 	}
+	if (param == SIGTSTP) {}
 }
 
 void quit_sigHandler(int param) {
@@ -82,6 +83,7 @@ struct redirect {
 };
 
 int main() {
+	signal (SIGTSTP, input_sigHandler);
 	while (true) {
 		signal(SIGINT, input_sigHandler);
 		char** argv = NULL;
@@ -247,6 +249,7 @@ int main() {
 				exit(-1);
 			} else if (pid == 0) {	// Child Process
 				signal(SIGINT, SIG_DFL);
+				signal(SIGTSTP, SIG_DFL);
 
 				if (0 == strcmp(argv[0], "cd")) exit(0); // cd: PARENT PROCESS
 
