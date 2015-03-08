@@ -376,7 +376,7 @@ int main() {
 					if (-1 == waitpid(waiting_pid, &status, WUNTRACED))
 						perror("wait");
 					if (WIFSTOPPED(status)) {
-						stopped_pids.push_back(pid);
+						stopped_pids.push_back(waiting_pid);
 						cout << "[" << stopped_pids.size() << "]+ Stopped\t\t" << argv[0] << endl;
 					}
 				}
