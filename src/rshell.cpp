@@ -38,7 +38,7 @@ void quit_sigHandler(int param) {
 }
 
 int main() {
-	list<int> stoppedpids;
+	list<int> stopped_pids;
 	signal (SIGTSTP, input_sigHandler); // Ctrl C
 
 	while (true) {
@@ -205,34 +205,12 @@ int main() {
 				comPr.deleteCStrings(commands);
 				exit(-1);
 			} else if (pid == 0) {	// child Process
+				// cd/fg (Do in parent process)
+				if (0 == strcmp(argv[0], "cd") || 0 == strcmp(argv[0], "fg")) exit(0);
+
+				// Default signals for ctrl z, ctrl c
 				signal(SIGINT, SIG_DFL);
 				signal(SIGTSTP, SIG_DFL);
-
-				if (0 == strcmp(argv[0], "cd")) exit(0); // cd: PARENT PROCESS
-				else if (0 == strcmp(argv[0], "fg")) {	// fg
-					int stoppedID = stoppedpids.size() ? stoppedpids.size() : 1; // default, most recent or 1
-					int sizePids = stoppedpids.size();
-
-					if (realcomsP.at(i).size() >= 2) {
-						if (-1 != (stoppedID = toDigit(argv[1])) && sizePids >= stoppedID) {
-							list<int>::iterator it = stoppedpids.begin(); // List has no middle of list accessor
-							for (int i = 0; i < stoppedID; i++, it++);
-							int pidStopped = *it;
-
-							if (-1 == kill(pidStopped, SIGCONT))
-								perror("rshell: fg"); // No such job
-						} else cerr << "rshell: fg: " << argv[1] << ": no such job";
-					} else {
-						if (sizePids >= stoppedID) {
-							if (-1 == kill(stoppedpids.back(), SIGCONT)) {
-								string s = "rshell: fg";
-								s +=  argv[1];
-								perror(s.c_str()); // No such job
-							}
-						} else cerr << "rshell: fg: current: no such job";
-					}
-				}
-
 
 				// If piping, this command outputs to pipe
 				if (isPipe.at(i)) {
@@ -326,6 +304,7 @@ int main() {
 
 				exit(0);
 			} else if (pid > 0) { // parent!
+
 				int status;
 
 				// Ctrl Z: WUNTRACED is an option that lets the parent wait for processes that
@@ -336,14 +315,70 @@ int main() {
 					perror("wait");
 				if (errno != 0 && errno != EACCES && errno != ENOEXEC && errno != ENOENT)
 					exit(-1);
+				if (WIFSTOPPED(status)) {
+					stopped_pids.push_back(pid);
+					cout << "[" << stopped_pids.size() << "]+ Stopped\t\t" << argv[0] << endl;
+				}
 
+				// cd
 				if (0 == strcmp(argv[0], "cd")) { // cd: PARENT PROCESS
 					if (realcomsP.at(i).size() < 2 || -1 == chdir(argv[1])) // need a param (others ignored)
 						perror("rshell: cd");
 				}
-				if (WIFSTOPPED(status)) {
-					stoppedpids.push_back(pid);
-					cout << "[" << stoppedpids.size() << "]+ Stopped\t\t" << argv[0] << endl;
+
+				// fg
+				int waiting_pid = -1;
+				if (0 == strcmp(argv[0], "fg")) {
+					if (stopped_pids.empty()) {
+						cerr << "rshell: fg: " << argv[1] << ": no such job";
+						exit(-1);
+					}
+					int stoppedID = stopped_pids.size() ? stopped_pids.size() : 1; // default, most recent or 1
+					int sizePids = stopped_pids.size();
+
+					//cout << endl << "stoppedID = " << stoppedID << endl
+					//	<< "sizePids = " << sizePids << endl;
+
+					// If fg has argument (id of stopped process)
+					// vector composed of <fg> <arg> <null> (at least 3)
+					if (realcomsP.at(i).size() > 2) {
+						if (-1 != (stoppedID = toDigit(argv[1])) && sizePids >= stoppedID) {
+
+							// get element at stoppedID - 1
+							list<int>::iterator it = stopped_pids.begin(); 
+							for (int i = 0; i < stoppedID - 1; i++, it++);
+							int pidStopped = *it;
+
+							// continue process, wait
+							if (-1 != kill(pidStopped, SIGCONT)) {
+								waiting_pid = pidStopped;
+								stopped_pids.erase(it);
+							} else perror("rshell: fg"); // No such job
+							
+						} else cerr << "rshell: fg: " << argv[1] << ": no such job";
+					} 
+					
+					// Default fg
+					else {
+						// continue process, wait
+						if (-1 != kill(stopped_pids.back(), SIGCONT)) {
+							waiting_pid = stopped_pids.back();
+							stopped_pids.pop_back();
+						} else {
+							string s = "rshell: fg";
+							s +=  argv[1];
+							perror(s.c_str()); // No such job
+						}
+					}
+				}
+
+				if (waiting_pid != -1) {
+					if (-1 == waitpid(waiting_pid, &status, WUNTRACED))
+						perror("wait");
+					if (WIFSTOPPED(status)) {
+						stopped_pids.push_back(pid);
+						cout << "[" << stopped_pids.size() << "]+ Stopped\t\t" << argv[0] << endl;
+					}
 				}
 			}
 		}
