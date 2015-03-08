@@ -1,4 +1,5 @@
 #include <iostream>
+#include <boost/tokenizer.hpp>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -6,7 +7,6 @@
 #include <errno.h>
 #include <vector>
 #include "comParse.h"
-#include "env.h"
 #include <cstring>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -82,7 +82,6 @@ struct redirect {
 };
 
 int main() {
-	env e;
 	while (true) {
 		signal(SIGINT, input_sigHandler);
 		char** argv = NULL;
@@ -265,13 +264,29 @@ int main() {
 					}
 				}
 
-				string fullargv; 	// Get PATH var and append program to it
-				const string path = e.getpath(argv[0]);
-				fullargv.append(path);
-				fullargv.append("/");
-				fullargv.append(argv[0]);
+				char* cpathvar = getenv("PATH");
+				if (cpathvar == NULL) {
+					perror("getenv");
+					exit(-1);
+				}
+
+				string pathvar = cpathvar;
+				typedef boost::tokenizer<char_separator<char> > tokenizer;
+				char rm_delim[2] = {':', '\0'}; // null is delim, not char for filtering
+				char_separator<char> charSep(rm_delim); // should ignore only whitespace
+				tokenizer parse(pathvar, charSep);
 				
-				if (-1 == execv(fullargv.c_str(), argv)) {
+				errno = 0;
+
+				for (tokenizer::iterator it = parse.begin(); it != parse.end(); it++) {
+					string s = *it + "/";
+					s += argv[0];
+					if (-1 != execv(s.c_str(), argv)) {
+						break;
+					}
+				}
+
+				if (errno != 0) { // perror for execv
 					// All children need to exit! (forgot this)
 					if (errno == EACCES) { // Access denied
 						perror(argv[0]);
