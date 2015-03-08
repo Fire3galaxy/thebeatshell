@@ -6,20 +6,19 @@
 #include <stdio.h>
 #include <errno.h>
 #include <vector>
-#include "comParse.h"
 #include <cstring>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <list>
+#include "comParse.h"
+#include "redirect.h"
+#include "digit.h"
 
 using namespace boost;
 using namespace std;
 
-#define I_REDIRECT 0
-#define O_REDIRECT 1
-#define ORD_APPEND 2
- 
 void input_sigHandler(int param) {
 	if (param == SIGINT) {
 		char currentDir[512];
@@ -38,52 +37,10 @@ void quit_sigHandler(int param) {
 	}
 }
 
-struct redirect;
-bool redirection(char** argv, redirect& rdts, const int id);
-bool setRdct(char** argv, redirect& rdts);
-
-struct redirect {
-	// May now be irrelevant b/c rdctInd replaces it
-	int indexIR;
-	int indexOR;
-	int indexPR;
-	bool doI_Rdct; // input redirect
-	bool doO_Rdct; // output redirect
-	int savedP; // for duping 
-	int pfd; // when opening new fd
-
-	vector<int> v_ind,v_pfd,v_savedP;
-	vector<pair<int,int> > v_opfd;
-
-	vector<int*> currentFD;
-
-	redirect() {
-		indexOR = -1;
-		indexIR = -1;
-		indexPR = -1;
-		
-		doO_Rdct = false;
-		doI_Rdct = false;
-		savedP = -1;
-		pfd = -1;
-	}
-	void closeCurrFDs() {
-		if (!currentFD.empty()) {
-			for (vector<int*>::iterator it = currentFD.begin(); 
-					it != currentFD.end(); it++) {
-				if (-1 == close(*(*it))) {
-					perror("close");
-					exit(-1);
-				}
-			}
-
-			currentFD.clear();
-		}
-	}
-};
-
 int main() {
-	signal (SIGTSTP, input_sigHandler);
+	list<int> stoppedpids;
+	signal (SIGTSTP, input_sigHandler); // Ctrl C
+
 	while (true) {
 		signal(SIGINT, input_sigHandler);
 		char** argv = NULL;
@@ -252,6 +209,30 @@ int main() {
 				signal(SIGTSTP, SIG_DFL);
 
 				if (0 == strcmp(argv[0], "cd")) exit(0); // cd: PARENT PROCESS
+				else if (0 == strcmp(argv[0], "fg")) {	// fg
+					int stoppedID = stoppedpids.size() ? stoppedpids.size() : 1; // default, most recent or 1
+					int sizePids = stoppedpids.size();
+
+					if (realcomsP.at(i).size() >= 2) {
+						if (-1 != (stoppedID = toDigit(argv[1])) && sizePids >= stoppedID) {
+							list<int>::iterator it = stoppedpids.begin(); // List has no middle of list accessor
+							for (int i = 0; i < stoppedID; i++, it++);
+							int pidStopped = *it;
+
+							if (-1 == kill(pidStopped, SIGCONT))
+								perror("rshell: fg"); // No such job
+						} else cerr << "rshell: fg: " << argv[1] << ": no such job";
+					} else {
+						if (sizePids >= stoppedID) {
+							if (-1 == kill(stoppedpids.back(), SIGCONT)) {
+								string s = "rshell: fg";
+								s +=  argv[1];
+								perror(s.c_str()); // No such job
+							}
+						} else cerr << "rshell: fg: current: no such job";
+					}
+				}
+
 
 				// If piping, this command outputs to pipe
 				if (isPipe.at(i)) {
@@ -345,18 +326,24 @@ int main() {
 
 				exit(0);
 			} else if (pid > 0) { // parent!
+				int status;
+
 				// Ctrl Z: WUNTRACED is an option that lets the parent wait for processes that
 				// have stopped too, not just terminated.
 				// If stopped, add its pid to a queue of stopped pids and use kill(pid, SIGCONT) 
 				// to continue it if user enters fg or bg (don't wait if bg, but keep process in queue)
-				if (-1 == waitpid(pid, 0, WUNTRACED))
+				if (-1 == waitpid(pid, &status, WUNTRACED))
 					perror("wait");
 				if (errno != 0 && errno != EACCES && errno != ENOEXEC && errno != ENOENT)
 					exit(-1);
+
 				if (0 == strcmp(argv[0], "cd")) { // cd: PARENT PROCESS
-					if (-1 == chdir(argv[1])) {
+					if (realcomsP.at(i).size() < 2 || -1 == chdir(argv[1])) // need a param (others ignored)
 						perror("rshell: cd");
-					}
+				}
+				if (WIFSTOPPED(status)) {
+					stoppedpids.push_back(pid);
+					cout << "[" << stoppedpids.size() << "]+ Stopped\t\t" << argv[0] << endl;
 				}
 			}
 		}
@@ -387,71 +374,4 @@ int main() {
 
 	return 0;
 }
-
-
-bool setRdct(char** argv, redirect& rdts) {
-	if (rdts.v_opfd.empty()) return true;
-
-	bool doExec = true;
-	for (unsigned int i = 0; i < rdts.v_opfd.size(); i++)
-		doExec = redirection(argv, rdts, i) ? doExec : false; // if false, stay false
-	return doExec;
-}
-
-// closes respective fd and opens file in its place
-bool redirection(char** argv, redirect& rdts, const int id) {
-	/*int* savedFD = rdts.savedP;
-	int* newFD = rdts.pfd;
-	int* index = rdts.indexPR;
-	*/
-
-	int savedFD,newFD;
-	int index = rdts.v_ind.at(id);
-	int FLAG;
-
-	// 0 == INPUT, 1 == OUTPUT
-	if (rdts.v_opfd.at(id).first == I_REDIRECT) {
-		FLAG = O_RDONLY;
-		if (rdts.v_opfd.at(id).second == -1) 
-			rdts.v_opfd.at(id).second = 0; // DEFAULT for input operator
-	} else if (rdts.v_opfd.at(id).first == O_REDIRECT) {
-		FLAG = O_WRONLY | O_CREAT | O_TRUNC;
-		if (rdts.v_opfd.at(id).second == -1) 
-			rdts.v_opfd.at(id).second = 1; // DEFAULT for output operator
-	} else if (rdts.v_opfd.at(id).first == ORD_APPEND) {
-		FLAG = O_WRONLY | O_CREAT | O_APPEND;
-		if (rdts.v_opfd.at(id).second == -1) 
-			rdts.v_opfd.at(id).second = 1; // DEFAULT for output operator
-	} 
-
-	// dup the fd
-	if ( -1 == (savedFD = dup(rdts.v_opfd.at(id).second)) ) {
-		perror("dup-redirect" + rdts.v_opfd.at(id).second);
-		exit(-1);
-	}
-	rdts.v_savedP.push_back(savedFD); // Saving fd for dup2 later
-
-	// close fd
-	if ( -1 == close(rdts.v_opfd.at(id).second) ) {
-		perror("close-redirect" + rdts.v_opfd.at(id).second);
-		exit(-1);
-	}
-
-	// open file
-	// if create file, then give read write by default
-	if ( -1 == (newFD = open(argv[index], FLAG, S_IRUSR | S_IWUSR)) ) {
-		if (errno == EACCES || errno == ENOENT) { 	//FIXME
-			perror(argv[index]);
-			rdts.v_pfd.push_back(rdts.v_opfd.at(id).second); // Saving new fd to close later
-			return false;
-		} else {
-			perror("open-redirect" + rdts.v_opfd.at(id).second);
-			exit(-1);
-		}
-	}
-	rdts.v_pfd.push_back(newFD); // Saving new fd to close later
-
-	return true;
-}
-
 
