@@ -37,6 +37,26 @@ void quit_sigHandler(int param) {
 	}
 }
 
+// If first char is '~', replace with home var
+string replaceTilde(const char* c) {
+	string s = c;
+
+	if (!s.empty()) {
+		if (s.at(0) == '~') {
+			char* HOME = getenv("HOME");
+			if (HOME != NULL) 
+				return s.replace(0, 1, HOME);
+		}
+	} else {
+		char* HOME = getenv("HOME");
+		if (HOME != NULL) 
+			return (s = HOME);
+	}
+
+	return s;
+}
+
+
 int main() {
 	list<int> stopped_pids;
 	signal (SIGTSTP, input_sigHandler); // Ctrl C
@@ -322,7 +342,10 @@ int main() {
 
 				// cd
 				if (0 == strcmp(argv[0], "cd")) { // cd: PARENT PROCESS
-					if (realcomsP.at(i).size() < 2 || -1 == chdir(argv[1])) // need a param (others ignored)
+					string newDir = realcomsP.at(i).size() > 2 ? // Supports ~/ and no argument
+						replaceTilde(argv[1]) : replaceTilde("");
+
+					if (-1 == chdir(newDir.c_str()))
 						perror("rshell: cd");
 				}
 
