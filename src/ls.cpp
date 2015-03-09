@@ -29,9 +29,9 @@ struct FLAGS {
 FLAGS all_flags;
 
 void determine_arguments(int argc, char** argv, std::vector<std::string>& direc, std::vector<char>& flags);
-void getFilesFromDirectory(DIR* dirp, std::vector<char*>& f, std::vector<std::pair<char*, unsigned char> >& t);
+void getFilesFromDirectory(DIR* dirp, std::vector<char*>& f);
 void scanFlags(const std::vector<char>& flags);
-void printdir(const std::vector<char*> files, const std::vector<std::pair<char*, unsigned char> > types);
+void printdir(const std::vector<char*> files, const std::string dir);
 void recursive(std::vector<std::string>& direc, std::vector<char*> files, const char* dirName);
 
 int main(int argc, char** argv)
@@ -62,15 +62,14 @@ int main(int argc, char** argv)
 		}
 		
 		std::vector<char*> files;
-		std::vector<std::pair<char*, unsigned char> > filetypes;
-		getFilesFromDirectory(dirp, files, filetypes);
+		getFilesFromDirectory(dirp, files);
 		if (all_flags.recursive) recursive(direc, files, dirName);
 
 		if (direc.size() > 1) { // Multiple directories -> output names too
 			std::cout << dirName << ":" << std::endl;
-			printdir(files, filetypes);
+			printdir(files, dirName);
 			if (i < direc.size()) std::cout << '\n'; // give newline if not last dir
-		} else printdir(files, filetypes);
+		} else printdir(files, dirName);
 
 		if (-1 == (closedir(dirp))) {
 			perror("closedir");
@@ -82,11 +81,10 @@ int main(int argc, char** argv)
 	return 0;
 }
 
-void getFilesFromDirectory(DIR* dirp, std::vector<char*>& f, std::vector<std::pair<char*, unsigned char> >& t) {
+void getFilesFromDirectory(DIR* dirp, std::vector<char*>& f) {
 	dirent *direntp;
 	errno = 0;
 	std::vector<char*> files;
-	std::vector<std::pair<char*, unsigned char> > types;
 	while ((direntp = readdir(dirp))) {
 		if (direntp == NULL && errno != 0) {
 			perror("readdir");
@@ -99,13 +97,10 @@ void getFilesFromDirectory(DIR* dirp, std::vector<char*>& f, std::vector<std::pa
 				(!equalsDOT  && !equalsDOTDOT )) {
 			// use stat here to find attributes of file
 			files.push_back(direntp->d_name);
-			types.push_back(std::pair<char*, unsigned char>(direntp->d_name,
-					direntp->d_type));
 		}
 	}
 
 	f = files;
-	t = types;
 }
 
 // takes arguments after ls and sorts them into directories and flags
@@ -136,9 +131,9 @@ void scanFlags(const std::vector<char>& flags) {
 	}
 }
 
-void printdir(const std::vector<char*> files, const std::vector<std::pair<char*, unsigned char> > types) {
-	if (all_flags.many_per_line) print_files(files, types, MANY_PER_LINE);
-	else if (all_flags.long_format) print_files(files, types, LONG_FORM);
+void printdir(const std::vector<char*> files, const std::string dir) {
+	if (all_flags.many_per_line) print_files(files, dir, MANY_PER_LINE);
+	else if (all_flags.long_format) print_files(files, dir, LONG_FORM);
 }
 
 void recursive(std::vector<std::string>& direc, std::vector<char*> files, const char* dirName) {
@@ -156,6 +151,6 @@ void recursive(std::vector<std::string>& direc, std::vector<char*> files, const 
 			exit(-1);
 		}
 
-		if ((file_det.st_mode & S_IFDIR) != 0) direc.push_back(fullPath.c_str());
+		if (S_ISDIR(file_det.st_mode)) direc.push_back(fullPath.c_str());
 	}
 }

@@ -28,23 +28,23 @@
 #define permis(filedeets, right, c) if ( (filedeets & right) != 0) putchar(c); \
 	else putchar('-')
 
-void print_files(std::vector<char*> files, std::vector<std::pair<char*, unsigned char> > types, int format);
-void print_many_per_line(std::vector<char*> files, std::vector<std::pair<char*, unsigned char> > types);
-void print_long_format(std::vector<char*> files, std::vector<std::pair<char*, unsigned char> > types);
+void print_files(std::vector<char*> files, std::string dir, int format);
+void print_many_per_line(std::vector<char*> files, std::string dir);
+void print_long_format(std::vector<char*> files, std::string dir);
 int get_columns_num();
 bool cstringLS_cmp(char* a, char* b);
 int indexFirstCharOfName(char* s);
 
-void print_files(std::vector<char*> files, std::vector<std::pair<char*, unsigned char> > types, int format) {
-	if (format == MANY_PER_LINE) print_many_per_line(files, types);
-	else if (format == LONG_FORM) print_long_format(files, types);
+void print_files(std::vector<char*> files, std::string dir, int format) {
+	if (format == MANY_PER_LINE) print_many_per_line(files, dir);
+	else if (format == LONG_FORM) print_long_format(files, dir);
 }
 	
 bool cstringLS_cmp(char* a, char* b) { // for sort function. Ignore case.
 	return strcasecmp(a + indexFirstCharOfName(a), b + indexFirstCharOfName(b)) <= 0;
 }
 
-bool cstringLS_cmp2(std::pair<char*, unsigned char> a, std::pair<char*, unsigned char> b) { // for sort function. Ignore case.
+bool cstringLS_cmp2(std::pair<char*, std::string> a, std::pair<char*, std::string> b) { // for sort function. Ignore case.
 	return strcasecmp(a.first + indexFirstCharOfName(a.first), b.first + indexFirstCharOfName(b.first)) <= 0;
 }
 
@@ -64,9 +64,8 @@ void print_test(std::vector<char*> files) {
 		std::cout << *it << std::endl;
 }
 
-void print_many_per_line(std::vector<char*> files, std::vector<std::pair<char*, unsigned char> > types) {
+void print_many_per_line(std::vector<char*> files, std::string dir) {
 	std::sort(files.begin(), files.end(), cstringLS_cmp); // Alphabetical, ignore case
-	std::sort(types.begin(), types.end(), cstringLS_cmp2); // Alphabetical, ignore case
 
 	// learned from GNU (lab3) ls command, need at least 1 column,
 	// need additional row if file.size / num_columns has remainder
@@ -131,13 +130,29 @@ void print_many_per_line(std::vector<char*> files, std::vector<std::pair<char*, 
 	std::cout << std::left; 
 	for (i = 0; i < num_rows; i++) {
 		for (j = 0, k = i ; j < num_columns && k < files.size(); j++, k += num_rows) {
+			// Stat to see if directory or executable
+			// for dot files, look at file name itself
+			struct stat file_det;
+			std::string fullPath = dir;
+			fullPath += "/";
+			fullPath += files.at(k);
+
+			if (-1 == (stat(fullPath.c_str(), &file_det))) {
+				perror("stat");
+				exit(-1);
+			}
+
 			std::string color;
 			//if (DT_DIR == types.at(j).second) color.append("\x1b[32m");
-			if (DT_REG == types.at(j).second) color.append("\x1b[31m");
+			if (S_ISDIR(file_det.st_mode)) color.append("\x1b[34m");
+			//if (S_ISDIR(file_det.st_mode)) color.append("\[\033[34m\]");
+			else if ((file_det.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) != 0) color.append("\x1b[32m");
+			//if (files.at(i)[0] == '.') color.append("\x1b[47;1m");
+			if (i == 0) color.append("\033[47;1m");
 
 			int columnWidth = columnMaxWidth.at(j) + (j != num_columns ? 2 : 0);
 			std::cout << color << std::setw(columnWidth); // diff column, diff width
-			std::cout << files.at(k) << "\x1b[39;49m"; // files + ' ' considered in columnsMaxWidth
+			std::cout << files.at(k) << "\x1b[0m" << "\033[49;0m"; // files + ' ' considered in columnsMaxWidth
 		}
 		std::cout << std::endl;
 	}
@@ -145,7 +160,7 @@ void print_many_per_line(std::vector<char*> files, std::vector<std::pair<char*, 
 	return;
 }
 
-void print_long_format(std::vector<char*> files, std::vector<std::pair<char*, unsigned char> > types) {
+void print_long_format(std::vector<char*> files, std::string dir) {
 	std::sort(files.begin(), files.end(), cstringLS_cmp); // Alphabetical, ignore case
 
 	std::ostringstream oss;
