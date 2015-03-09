@@ -11,6 +11,7 @@
 #include <pwd.h>
 #include <grp.h>
 #include <time.h>
+#include <dirent.h>
 
 #include <iostream>
 #include <string.h>
@@ -27,21 +28,24 @@
 #define permis(filedeets, right, c) if ( (filedeets & right) != 0) putchar(c); \
 	else putchar('-')
 
-void print_files(std::vector<char*> files, int format);
-void print_many_per_line(std::vector<char*> files);
-void print_long_format(std::vector<char*> files);
-void print_recursive(std::vector<char*> files); // FIXME
+void print_files(std::vector<char*> files, std::vector<std::pair<char*, unsigned char> > types, int format);
+void print_many_per_line(std::vector<char*> files, std::vector<std::pair<char*, unsigned char> > types);
+void print_long_format(std::vector<char*> files, std::vector<std::pair<char*, unsigned char> > types);
 int get_columns_num();
 bool cstringLS_cmp(char* a, char* b);
 int indexFirstCharOfName(char* s);
 
-void print_files(std::vector<char*> files, int format) {
-	if (format == MANY_PER_LINE) print_many_per_line(files);
-	else if (format == LONG_FORM) print_long_format(files);
+void print_files(std::vector<char*> files, std::vector<std::pair<char*, unsigned char> > types, int format) {
+	if (format == MANY_PER_LINE) print_many_per_line(files, types);
+	else if (format == LONG_FORM) print_long_format(files, types);
 }
 	
 bool cstringLS_cmp(char* a, char* b) { // for sort function. Ignore case.
 	return strcasecmp(a + indexFirstCharOfName(a), b + indexFirstCharOfName(b)) <= 0;
+}
+
+bool cstringLS_cmp2(std::pair<char*, unsigned char> a, std::pair<char*, unsigned char> b) { // for sort function. Ignore case.
+	return strcasecmp(a.first + indexFirstCharOfName(a.first), b.first + indexFirstCharOfName(b.first)) <= 0;
 }
 
 // If file starts with ..<NAME>, sort by name, not by dots
@@ -60,8 +64,9 @@ void print_test(std::vector<char*> files) {
 		std::cout << *it << std::endl;
 }
 
-void print_many_per_line(std::vector<char*> files) {
+void print_many_per_line(std::vector<char*> files, std::vector<std::pair<char*, unsigned char> > types) {
 	std::sort(files.begin(), files.end(), cstringLS_cmp); // Alphabetical, ignore case
+	std::sort(types.begin(), types.end(), cstringLS_cmp2); // Alphabetical, ignore case
 
 	// learned from GNU (lab3) ls command, need at least 1 column,
 	// need additional row if file.size / num_columns has remainder
@@ -126,9 +131,13 @@ void print_many_per_line(std::vector<char*> files) {
 	std::cout << std::left; 
 	for (i = 0; i < num_rows; i++) {
 		for (j = 0, k = i ; j < num_columns && k < files.size(); j++, k += num_rows) {
+			std::string color;
+			//if (DT_DIR == types.at(j).second) color.append("\x1b[32m");
+			if (DT_REG == types.at(j).second) color.append("\x1b[31m");
+
 			int columnWidth = columnMaxWidth.at(j) + (j != num_columns ? 2 : 0);
-			std::cout << std::setw(columnWidth); // diff column, diff width
-			std::cout << files.at(k); // files + ' ' considered in columnsMaxWidth
+			std::cout << color << std::setw(columnWidth); // diff column, diff width
+			std::cout << files.at(k) << "\x1b[39;49m"; // files + ' ' considered in columnsMaxWidth
 		}
 		std::cout << std::endl;
 	}
@@ -136,7 +145,7 @@ void print_many_per_line(std::vector<char*> files) {
 	return;
 }
 
-void print_long_format(std::vector<char*> files) {
+void print_long_format(std::vector<char*> files, std::vector<std::pair<char*, unsigned char> > types) {
 	std::sort(files.begin(), files.end(), cstringLS_cmp); // Alphabetical, ignore case
 
 	std::ostringstream oss;
