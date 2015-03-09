@@ -64,6 +64,36 @@ public:
 				} else words.push_back(*it);
 
 				countOR++;
+			} else if (*it == "&") {
+				int inpInd = -1;
+				
+				for (int i = 0; i <= countOR; i++) inpInd = com.find_first_of('&', inpInd + 1);
+
+				if (inpInd == -1) {
+					cerr << "find_first_of\n";
+					exit(-1);
+				}
+				
+			 	if (!words.empty() && inpInd - 1 >= 0 && com.at(inpInd - 1) == '&') {	// && syntax
+					words.back() += *it;
+				} else words.push_back(*it);
+
+				countOR++;
+			} else if (*it == "|") {
+				int inpInd = -1;
+				
+				for (int i = 0; i <= countOR; i++) inpInd = com.find_first_of('|', inpInd + 1);
+
+				if (inpInd == -1) {
+					cerr << "find_first_of\n";
+					exit(-1);
+				}
+				
+			 	if (!words.empty() && inpInd - 1 >= 0 && com.at(inpInd - 1) == '|') {	// || syntax
+					words.back() += *it;
+				} else words.push_back(*it);
+
+				countOR++;
 			} else words.push_back(*it);
 		}
 

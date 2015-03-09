@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <vector>
+#include <map>
 #include <cstring>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -86,8 +87,14 @@ int main() {
 		} while (commands.size() == 1); // if empty line, repeat req for command. sz 1 = just NULL delim.
 
 		bool doExec = true; // If false, do not fork and exec command
+		
+		//for (unsigned int i = 0; i < commands.size() - 1; i++) { // NULL at end
+		//	cout << commands.at(i) << ' ';
+		//}
+		//cout << endl;
+		//exit(0);
 
-		//MASSIVE SECTION OF CODE DEDICATED TO PARSING FOR SEMI, PIPES
+		//MASSIVE SECTION OF CODE DEDICATED TO PARSING FOR SEMI, CONNECTORS, PIPES
 		//-------------------------------------------------------------------------
 		int timeout = 0;
 		vector<char*> realcom; // command + arguments - input redirection & semicolon
@@ -96,6 +103,10 @@ int main() {
 		bool setPipe = false; // pipe will only be made if needed
 		argv = &commands.at(0);
 		redirect rdts;	// contains redirection flags and values
+
+		map<char**, string> conditionToRun; // For && and ||
+		bool expectCommand = false;
+		string condition = "";
 
 		for (unsigned int i = 0; i < commands.size() - 1; i++) { // NULL at end
 			char* c = commands.at(i);
@@ -109,7 +120,63 @@ int main() {
 				realcomsP.push_back(realcom);
 				realcom.clear();
 				isPipe.push_back(false);
+				conditionToRun[&realcomsP.back().at(0)] = "";
+				if (expectCommand) {
+					conditionToRun[&realcomsP.back().at(0)] = condition;
+					expectCommand = false;
+					condition = "";
+				}
+
+			} else if ( strchr(c, '&') != NULL) {
+				if (0 != strcmp(c, "&&") || realcom.empty()) {
+					cerr << "rshell: syntax error at " << c << "\n";
+					doExec = false;
+					break;
+				}
+				delete[] commands.at(i);
+				argv[i] = NULL;
+				timeout = 1;
+
+				realcom.push_back(NULL);
+				realcomsP.push_back(realcom);
+				realcom.clear();
+				isPipe.push_back(false);
+				conditionToRun[&realcomsP.back().at(0)] = "";
+				if (expectCommand) {
+					conditionToRun[&realcomsP.back().at(0)] = condition;
+					expectCommand = false;
+					condition = "";
+				}
+				expectCommand = true;
+				condition = "&&";
+			} else if (strcmp(c, "||") == 0) {
+				if (realcom.empty()) {
+					cerr << "rshell: syntax error at " << c << "\n";
+					doExec = false;
+					break;
+				}
+				delete[] commands.at(i);
+				argv[i] = NULL;
+				timeout = 1;
+
+				realcom.push_back(NULL);
+				realcomsP.push_back(realcom);
+				realcom.clear();
+				isPipe.push_back(false);
+				conditionToRun[&realcomsP.back().at(0)] = "";
+				if (expectCommand) {
+					conditionToRun[&realcomsP.back().at(0)] = condition;
+					expectCommand = false;
+					condition = "";
+				}
+				expectCommand = true;
+				condition = "||";
 			} else if (strcmp(c, "|") == 0) {
+				if (realcom.empty()) {
+					cerr << "rshell: syntax error at " << c << "\n";
+					doExec = false;
+					break;
+				}
 				delete[] commands.at(i);
 				argv[i] = NULL;
 				timeout = 1;
@@ -120,7 +187,20 @@ int main() {
 				isPipe.push_back(true);
 
 				setPipe = true;
+				conditionToRun[&realcomsP.back().at(0)] = "";
+				if (expectCommand) {
+					conditionToRun[&realcomsP.back().at(0)] = condition;
+					expectCommand = false;
+					condition = "";
+				}
+				expectCommand = true; // should have something to pipe to
+				condition = "|";
 			} else if (strchr(c, '<') != NULL) {
+				if (realcom.empty()) {
+					cerr << "rshell: syntax error at " << c << "\n";
+					doExec = false;
+					break;
+				}
 				int fd = -1;
 				// FIXME: Currently assumes 1 digit fd. K for assignment.
 				// Convert char to int with - 48
@@ -139,12 +219,17 @@ int main() {
 				}
 				rdts.v_ind.push_back(i + 1); // index
 			} else if (strchr(c, '>') != NULL) {
+				if (realcom.empty()) {
+					cerr << "rshell: syntax error at " << c << "\n";
+					doExec = false;
+					break;
+				}
 				int fd = -1;
 				// FIXME: Currently assumes 1 digit fd. K for assignment.
 				// Convert char to int with - 48
 				if (isdigit(commands.at(i)[0])) fd = commands.at(i)[0] - 48; // num before operator
 
-				if (strstr(commands.at(i), ">>>") != NULL) {
+				if (strstr(commands.at(i), ">>>") != NULL) { // 3 or more '>'
 					cerr << "rshell: syntax error at >\n";
 					doExec = false;
 					break;
@@ -164,7 +249,7 @@ int main() {
 				timeout = 2;	// do not push this or next arg
 
 				if ( !(i + 1 < commands.size() - 1) ) {	// next arg must exist (filename)
-					cerr << "rshell: syntax error at <";
+					cerr << "rshell: syntax error at >\n";
 					exit(-1);
 				}
 				rdts.v_ind.push_back(i + 1); // index
@@ -174,9 +259,23 @@ int main() {
 			else realcom.push_back(commands.at(i));
 		}
 
-		realcom.push_back(NULL);
-		realcomsP.push_back(realcom);
-		isPipe.push_back(false);
+		if (!realcom.empty()) {
+			realcom.push_back(NULL);
+			realcomsP.push_back(realcom);
+			isPipe.push_back(false);
+			conditionToRun[&realcomsP.back().at(0)] = "";
+			if (expectCommand) {
+				conditionToRun[&realcomsP.back().at(0)] = condition;
+				expectCommand = false;
+				condition = "";
+			}
+		} else {
+			if (expectCommand) {
+				cerr << "rshell: missing arg after " << condition << endl;
+				doExec = false;
+			}
+		}
+
 
 		// Test produces weird results but gdb says contents are correct...wth?
 		//for (unsigned int i = 0; i < realcomsP.size(); i++) {
@@ -212,6 +311,8 @@ int main() {
 			}
 		}
 
+		vector<int> retStat(realcomsP.size());
+
 		signal(SIGINT, quit_sigHandler);
 
 		for (unsigned int i = 0; doExec && i < realcomsP.size(); i++) {
@@ -244,6 +345,11 @@ int main() {
 			} else if (pid == 0) {	// child Process
 				// cd/fg (Do in parent process)
 				if (0 == strcmp(argv[0], "cd") || 0 == strcmp(argv[0], "fg")) exit(0);
+
+				// &&
+				if (conditionToRun[argv] == "&&" && retStat.at(i - 1) != 0) exit(-1);
+				// ||
+				if (conditionToRun[argv] == "||" && retStat.at(i - 1) == 0) exit(-1);
 
 				// Default signals for ctrl z, ctrl c
 				signal(SIGINT, SIG_DFL);
@@ -305,6 +411,9 @@ int main() {
 					stopped_pids.push_back(pid);
 					cout << "[" << stopped_pids.size() << "]+ Stopped\t\t" << argv[0] << endl;
 				}
+				if (WIFEXITED(status)) retStat.at(i) = WEXITSTATUS(status);
+				if (WIFSIGNALED(status)) // Ctrl C stops entire line of command
+					if (WTERMSIG(status) == SIGINT) break;
 
 				// cd
 				if (0 == strcmp(argv[0], "cd") && !(isPipe.at(i)) && !resetPipe ) { // cd: PARENT PROCESS
