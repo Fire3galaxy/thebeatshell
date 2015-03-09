@@ -80,6 +80,9 @@ int main() {
 			getline(cin, input);	// Get command
 
 			commands = comPr.parseLine(input);
+
+			// For sake of cs100-runtests
+			if (cin.fail()) exit(0);
 		} while (commands.size() == 1); // if empty line, repeat req for command. sz 1 = just NULL delim.
 
 		bool doExec = true; // If false, do not fork and exec command
