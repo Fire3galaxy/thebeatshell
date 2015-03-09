@@ -1,105 +1,120 @@
-Script started on Sun 08 Mar 2015 09:28:37 PM PDT
+Script started on Sun 08 Mar 2015 09:48:53 PM PDT
 ~
-dhand002@hammer $ cd CS100/firstrepo/rshell/
+dhand002@hammer $ cs[K[Kcd CS100/firstrepo/rshell/
 ~/CS100/firstrepo/rshell
 dhand002@hammer $ bin/rshell
-/home/csmajs/dhand002/CS100/firstrepo/rshell $ #change to cuurrent dir
-/home/csmajs/dhand002/CS100/firstrepo/rshell $ cd .
-/home/csmajs/dhand002/CS100/firstrepo/rshell $ #change one dir up
-/home/csmajs/dhand002/CS100/firstrepo/rshell $ cd ..
-/home/csmajs/dhand002/CS100/firstrepo $ #relative path ~/ to hHOE
-/home/csmajs/dhand002/CS100/firstrepo $ # HOME
-/home/csmajs/dhand002/CS100/firstrepo $ cd ~
-/home/csmajs/dhand002 $ #change to different dir (relative path)
-/home/csmajs/dhand002 $ cd CS100/csfirstrepo/rshell
-/home/csmajs/dhand002/CS100/firstrepo/rshell $ #change to different dir (absolute path)
-/home/csmajs/dhand002/CS100/firstrepo/rshell $ cd /home/csmajs/dhand002/firstrepo/rshell/src
-rshell: cd: No such file or directory
-/home/csmajs/dhand002/CS100/firstrepo/rshell $ cd /home
-/home $ cd /home/csmajs/dhand002
-/home/csmajs/dhand002 $ # extra #no argcd CS100
-/home/csmajs/dhand002/CS100 $ #no arg, go to homeHOME
-/home/csmajs/dhand002/CS100 $ cd
-/home/csmajs/dhand002 $ #extra arguments (should behave as normal)
-/home/csmajs/dhand002 $ cd CS100/firstrepo/rshell -THIS_IS_OP
-/home/csmajs/dhand002/CS100/firstrepo/rshell $ #connectors
-/home/csmajs/dhand002/CS100/firstrepo/rshell $ pwd ; cd ..; pwd
-/home/csmajs/dhand002/CS100/firstrepo/rshell
-/home/csmajs/dhand002/CS100/firstrepo
-/home/csmajs/dhand002/CS100/firstrepo $ #piping
-/home/csmajs/dhand002/CS100/firstrepo $ #  issue: cat doesn't stop after piepe
-/home/csmajs/dhand002/CS100/firstrepo $ #  wdoes not use affect cd
-/home/csmajs/dhand002/CS100/firstrepo $ cd rshell | cat #according to bash, dshould not cd
-
-/home/csmajs/dhand002/CS100/firstrepo $ #redirects
-/home/csmajs/dhand002/CS100/firstrepo $ echo CS100/firstrepo/rshell > file
-/home/csmajs/dhand002/CS100/firstrepo $ cd < file #should not take input, cd hto HOME
-/home/csmajs/dhand002 $ cd#combinged with reredirect with pipie
-/home/csmajs/dhand002 $ echo ".." > file
-/home/csmajs/dhand002 $ cd < file | cat #do not cd or cat otutput
-
-/home/csmajs/dhand002 $ # ttest 2
-/home/csmajs/dhand002 $ pwd | cd > file
-/home/csmajs/dhand002 $ ls # file esxists but directory not changed
-C:\nppdf32Log\debuglog.txt  Downloads		hs_err_pid9309.log  Pictures   theseus.cpp
-CS100			    Exercise 2 Lab 1	idea.cc		    Public     trash
-CS61			    file		idea.cpp	    script.rb  Videos
-Desktop			    hs_err_pid9250.log	kepler.cpp	    sports
-Documents		    hs_err_pid9270.log	Music		    Templates
-/home/csmajs/dhand002 $ cat file
-/home/csmajs/dhand002 $ #redirectors and connectors
-/home/csmajs/dhand002 $ echo .. | cd; cd .. ; cd Docuements #first one, nothing. second one, one level up, 3rd one, to Documents
-rshell: cd: No such file or directory
-/home/csmajs $ #no documents in this folder, whoops
-/home/csmajs $ ct#ctrl C test ---------------==============================================
-/home/csmajs $ #ctrl C tests
-/home/csmajs $ #==============================================
-/home/csmajs $ #just ctrl c
-/home/csmajs $ 
-/home/csmajs $ # dduring cat
-/home/csmajs $ cat
-
-/home/csmajs $ # during multiple commangsds
-/home/csmajs $ cat | grep hello
-hello
-hello
-
-/home/csmajs $ #program runs duringpipe algorithm here: run each program individually, so ctrl c had to be done in
-/home/csmajs $ #s#===============================================
-/home/csmajs $ #excecv tetssts
-/home/csmajs $ #===============================================
-/home/csmajs $ ls
-ls: cannot open directory .: Permission denied
-/home/csmajs $ cd dhand002
-/home/csmajs/dhand002 $ ls
-C:\nppdf32Log\debuglog.txt  Downloads		hs_err_pid9309.log  Pictures   theseus.cpp
-CS100			    Exercise 2 Lab 1	idea.cc		    Public     trash
-CS61			    file		idea.cpp	    script.rb  Videos
-Desktop			    hs_err_pid9250.log	kepler.cpp	    sports
-Documents		    hs_err_pid9270.log	Music		    Templates
-/home/csmajs/dhand002 $ #checkcd CS100/firstrepo /rshell #check that normal function works
-/home/csmajs/dhand002/CS100/firstrepo/rshell $ #chaeck for "." folder, last thing in PATH
-/home/csmajs/dhand002/CS100/firstrepo/rshell $ a.out
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #==============================
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #ecxevcv tests
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #==============================
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #basic program
 /home/csmajs/dhand002/CS100/firstrepo/rshell $ ls
 a.out  errFile	getline.cpp  Makefile	rshell.o  src		 tests
 bin    ex1.cpp	LICENSE      README.md	runTests  statManEx.cpp
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #checks .".", the last folder in PATH
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ a.out l#[4~dj# the lastthe a.out prog hwas for prog testing, sog
+[4: No such file or directory
 /home/csmajs/dhand002/CS100/firstrepo/rshell $ a.out ls
 HERE!!!!
 a.out  errFile	getline.cpp  Makefile	rshell.o  src		 tests
 bin    ex1.cpp	LICENSE      README.md	runTests  statManEx.cpp
 status: 0
 Now waiting for input to continue cat
-k
+d
 status: 0
-/home/csmajs/dhand002/CS100/firstrepo/rshell $ #a.out had parameter for command testing.
-/home/csmajs/dhand002/CS100/firstrepo/rshell $ #oputput error if command fails
-/home/csmajs/dhand002/CS100/firstrepo/rshell $ dlkjflk
-dlkjflk: No such file or directory
-/home/csmajs/dhand002/CS100/firstrepo/rshell $ exit
-~/CS100/firstrepo/rshell
-dhand002@hammer $ exit[K[K[K[K#done testing.[K============================================
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #wodoes not make up prog, fake prog
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ djfkl
+djfkl: No such file or directory
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ ##===============================
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #ctrol C c tetssts
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #===============================
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #basic ctrl c
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ 
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #during catommand
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ cat
+
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #during multiple commands
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ # (pipe din my porrog,  runs pcommands speaaraeparately)
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ # (will do ctrl c twice)                   ) )
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ cat | grep hello
+
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #================================
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #cd teests
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #================================
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #basicchange to current iddir
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ cd .
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #change one dir up
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ cd ..
+/home/csmajs/dhand002/CS100/firstrepo $ #relative parthto  to home
+/home/csmajs/dhand002/CS100/firstrepo $ cd ~
+/home/csmajs/dhand002 $ #change to dirff dir (relative path)
+/home/csmajs/dhand002 $ cd CS100/firstrepo/rshell
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #change to diff dir (absolute path)
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ cd /home/csmajs/dhanndd002/CS100Documents
+/home/csmajs/dhand002/Documents $ # change no arg, cd to HOME
+/home/csmajs/dhand002/Documents $ cd
+/home/csmajs/dhand002 $ #extra args (should do normal behavior, ignore other args)
+/home/csmajs/dhand002 $ pwd; cd ..; pwd
+/home/csmajs/dhand002
+/home/csmajs
+/home/csmajs $ cd
+/home/csmajs/dhand002 $ #piping
+/home/csmajs/dhand002 $ #   issue, :e: cat doesn't stop after pipiee 
+/home/csmajs/dhand002 $ #   doesn't affect cd quality
+/home/csmajs/dhand002 $ #   will cuse ctrl c here too
+/home/csmajs/dhand002 $ cd rshell | cat #according to bash, should not cd
+
+/home/csmajs/dhand002 $ #redirect
+/home/csmajs/dhand002 $ echo CS100/firstrepo/rshell > file
+/home/csmajs/dhand002 $ cd < file #cshould not take input, just cd home
+/home/csmajs/dhand002 $ cd Documents #will show it workscd happened
+/home/csmajs/dhand002/Documents $ cd < ../file
+/home/csmajs/dhand002 $ #combined redirector and piping
+/home/csmajs/dhand002 $ #    issue with pipie wihere cat doesn't stop iafter pipe
+/home/csmajs/dhand002 $ cd <echo ".." > file
+/home/csmajs/dhand002 $ cd < file | cat #do not cd or cat
+
+/home/csmajs/dhand002 $ #   test 2
+/home/csmajs/dhand002 $ pwd | cd > file
+/home/csmajs/dhand002 $ ls | grep fielle #file exists, but directory not changed,is empty and no cd happens
+file
+
+/home/csmajs/dhand002 $ #redirect an cd connector
+/home/csmajs/dhand002 $ echo .. | cd; cd ..; cd dhand002/Documents #1st: nothing, 2nd : homecsmajs, 3rd: documents
+/home/csmajs/dhand002/Documents $ #=================================================
+/home/csmajs/dhand002/Documents $ #csttrl z E(Eextra credit)
+/home/csmajs/dhand002/Documents $ #==================================================
+/home/csmajs/dhand002/Documents $ #does not canscel prog
+/home/csmajs/dhand002/Documents $ 
+/home/csmajs/dhand002/Documents $ 
+/home/csmajs/dhand002/Documents $ #stops prog
+/home/csmajs/dhand002/Documents $ cat
+[1]+ Stopped		cat
+/home/csmajs/dhand002/Documents $ #starts it up
+/home/csmajs/dhand002/Documents $ fg
+dlkjf
+dlkjf
+dfjkl
+dfjkl
+sk
+sk
+[1]+ Stopped		fg
+/home/csmajs/dhand002/Documents $ #stops more than one prog
+/home/csmajs/dhand002/Documents $ grep hello
+dkl
+hello
+hello
+[2]+ Stopped		grep
+/home/csmajs/dhand002/Documents $ #starts up progra in order
+/home/csmajs/dhand002/Documents $ fg
+dkl
+hello
+hello
+
+/home/csmajs/dhand002/Documents $ fg
+/home/csmajs/dhand002/Documents $ #bug: oother programs coancelled, but not runand not run
+/home/csmajs/dhand002/Documents $ exit
 ~/CS100/firstrepo/rshell
 dhand002@hammer $ exit
 exit
 
-Script done on Sun 08 Mar 2015 09:39:37 PM PDT
+Script done on Sun 08 Mar 2015 10:03:05 PM PDT
