@@ -28,16 +28,16 @@ struct FLAGS {
 
 FLAGS all_flags;
 
-void determine_arguments(int argc, char** argv, std::vector<char*>& direc, std::vector<char>& flags);
+void determine_arguments(int argc, char** argv, std::vector<std::string>& direc, std::vector<char>& flags);
 std::vector<char*> getFilesFromDirectory(DIR* dirp);
 void scanFlags(const std::vector<char>& flags);
 void printdir(const std::vector<char*> files);
-void recursive(std::vector<char*> direc, std::vector<char*> files);
+void recursive(std::vector<std::string>& direc, std::vector<char*> files, const char* dirName);
 
 int main(int argc, char** argv)
 {
 	char DEFAULT[] = ".";
-	std::vector<char*> direc;
+	std::vector<std::string> direc;
 	std::vector<char> flags;
 
 	all_flags.IGNORE_DOT_AND_DOTDOT = true; // May be changed by scanFlags()
@@ -46,11 +46,14 @@ int main(int argc, char** argv)
 	determine_arguments(argc, argv, direc, flags); // sort arguments into directories and flags
 	scanFlags(flags); // Trigger proper bools for flags
 
-	unsigned int i = 0; // to enable loop if direc is empty
+	unsigned int i = 0; // to enable loop if direc is not empty
 	do {
-		char* dirName; // Get directory argument from direc or default
+		const char* dirName; // Get directory argument from direc or default
 		if (direc.empty()) dirName = DEFAULT;
-		else dirName = direc.at(i);
+		else {
+			dirName = direc.at(i).c_str();
+			i++;
+		}
 
 		DIR *dirp = opendir(dirName);
 		if (dirp == NULL) {
@@ -59,11 +62,12 @@ int main(int argc, char** argv)
 		}
 		
 		std::vector<char*> files = getFilesFromDirectory(dirp);
+		if (all_flags.recursive) recursive(direc, files, dirName);
 
 		if (direc.size() > 1) { // Multiple directories -> output names too
 			std::cout << dirName << ":" << std::endl;
 			printdir(files);
-			if (i < direc.size() - 1) std::cout << '\n'; // give newline if not last dir
+			if (i < direc.size()) std::cout << '\n'; // give newline if not last dir
 		} else printdir(files);
 
 		if (-1 == (closedir(dirp))) {
@@ -71,7 +75,6 @@ int main(int argc, char** argv)
 			exit(-1);
 		}
 
-		i++;
 	} while (i < direc.size());
 
 	return 0;
@@ -100,13 +103,13 @@ std::vector<char*> getFilesFromDirectory(DIR* dirp) {
 }
 
 // takes arguments after ls and sorts them into directories and flags
-void determine_arguments(int argc, char** argv, std::vector<char*>& direc, std::vector<char>& flags) {
+void determine_arguments(int argc, char** argv, std::vector<std::string>& direc, std::vector<char>& flags) {
 	for (int i = 1; i < argc; i++) {
 		if (argv[i][0] == '-' && strlen(argv[i]) > 1) // flags = -<arguments>
 			for (unsigned int j = 1; j < strlen(argv[i]); j++) {
 				flags.push_back(argv[i][j]);
 			}
-		else direc.push_back(argv[i]);
+		else direc.push_back(std::string(argv[i]));
 	}
 
 	return;
@@ -132,15 +135,21 @@ void printdir(const std::vector<char*> files) {
 	else if (all_flags.long_format) print_files(files, LONG_FORM);
 }
 
-void recursive(std::vector<char*> direc, std::vector<char*> files) {
+void recursive(std::vector<std::string>& direc, std::vector<char*> files, const char* dirName) {
 	std::sort(files.begin(), files.end());
 
 	struct stat file_det;
 	
 	for (unsigned int i = 0; i < files.size(); i++) {
-		if (-1 == (stat(files.at(i), &file_det)) {
+		std::string fullPath = dirName;
+		fullPath += "/";
+		fullPath += files.at(i);
+
+		if (-1 == (stat(fullPath.c_str(), &file_det))) {
 			perror("stat");
 			exit(-1);
 		}
 
-		if ((file_det.st_mode & S_IFDIR) != 0) direc.push_back(files.at(i));
+		if ((file_det.st_mode & S_IFDIR) != 0) direc.push_back(fullPath.c_str());
+	}
+}

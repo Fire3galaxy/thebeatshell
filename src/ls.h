@@ -161,18 +161,6 @@ void print_long_format(std::vector<char*> files) {
 		oss.str("");
 	}
 	
-	unsigned long bitsizeWidth = 0;
-	for (unsigned int i = 0; i < files.size(); i++) {
-		if (-1 == stat(files.at(i), &file_details)) {
-			perror("stat");
-			exit(-1);
-		}
-		
-		oss << file_details.st_size;
-		if (bitsizeWidth < oss.str().size())
-			bitsizeWidth = oss.str().size();
-		oss.str("");
-	}
 	for (unsigned int i = 0; i < files.size(); i++) {
 		if (-1 == stat(files.at(i), &file_details)) {
 			perror("stat");
