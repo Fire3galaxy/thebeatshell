@@ -23,6 +23,7 @@ struct FLAGS {
 	bool IGNORE_DOT_AND_DOTDOT;
 	bool long_format;
 	bool many_per_line;
+	bool recursive;
 };
 
 FLAGS all_flags;
@@ -31,6 +32,7 @@ void determine_arguments(int argc, char** argv, std::vector<char*>& direc, std::
 std::vector<char*> getFilesFromDirectory(DIR* dirp);
 void scanFlags(const std::vector<char>& flags);
 void printdir(const std::vector<char*> files);
+void recursive(std::vector<char*> direc, std::vector<char*> files);
 
 int main(int argc, char** argv)
 {
@@ -116,7 +118,8 @@ void scanFlags(const std::vector<char>& flags) {
 		else if (flags.at(i) == 'l') {
 			all_flags.many_per_line = false;
 			all_flags.long_format = true;
-		} else {
+		} else if (flags.at(i) == 'R') 	all_flags.recursive = true;
+		else {
 			std::cout << "ls: invalid option -- '" << flags.at(i) << "'\n"
 				<< "Try 'ls --help' for more information." << std::endl;
 			exit(-1);
@@ -128,3 +131,16 @@ void printdir(const std::vector<char*> files) {
 	if (all_flags.many_per_line) print_files(files, MANY_PER_LINE);
 	else if (all_flags.long_format) print_files(files, LONG_FORM);
 }
+
+void recursive(std::vector<char*> direc, std::vector<char*> files) {
+	std::sort(files.begin(), files.end());
+
+	struct stat file_det;
+	
+	for (unsigned int i = 0; i < files.size(); i++) {
+		if (-1 == (stat(files.at(i), &file_det)) {
+			perror("stat");
+			exit(-1);
+		}
+
+		if ((file_det.st_mode & S_IFDIR) != 0) direc.push_back(files.at(i));

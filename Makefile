@@ -1,17 +1,16 @@
 VPATH = src
-CXXFLAGS = -ansi -pedantic -Wall -Werror
-objects = rshell.o ls.o
+CXXFLAGS = -ansi -pedantic -Wall -Werror -g
+objects = rshell.o
 
 all: $(objects) | bin
 	g++ -o rshell rshell.o
-	g++ -o ls ls.o
 	mv rshell bin
 
 rshell: rshell.o | bin
 	g++ $(CXXFLAGS) -o rshell rshell.o 
 	mv rshell bin
 
-rshell.o: comParse.h
+rshell.o: comParse.h 
 
 ls: ls.o | bin
 	g++ $(CXXFLAGS) -o ls ls.o

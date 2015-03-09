@@ -1,0 +1,120 @@
+Script started on Sun 08 Mar 2015 09:48:53 PM PDT
+~
+dhand002@hammer $ cs[K[Kcd CS100/firstrepo/rshell/
+~/CS100/firstrepo/rshell
+dhand002@hammer $ bin/rshell
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #==============================
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #ecxevcv tests
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #==============================
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #basic program
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ ls
+a.out  errFile	getline.cpp  Makefile	rshell.o  src		 tests
+bin    ex1.cpp	LICENSE      README.md	runTests  statManEx.cpp
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #checks .".", the last folder in PATH
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ a.out l#[4~dj# the lastthe a.out prog hwas for prog testing, sog
+[4: No such file or directory
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ a.out ls
+HERE!!!!
+a.out  errFile	getline.cpp  Makefile	rshell.o  src		 tests
+bin    ex1.cpp	LICENSE      README.md	runTests  statManEx.cpp
+status: 0
+Now waiting for input to continue cat
+d
+status: 0
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #wodoes not make up prog, fake prog
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ djfkl
+djfkl: No such file or directory
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ ##===============================
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #ctrol C c tetssts
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #===============================
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #basic ctrl c
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ 
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #during catommand
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ cat
+
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #during multiple commands
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ # (pipe din my porrog,  runs pcommands speaaraeparately)
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ # (will do ctrl c twice)                   ) )
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ cat | grep hello
+
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #================================
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #cd teests
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #================================
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #basicchange to current iddir
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ cd .
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #change one dir up
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ cd ..
+/home/csmajs/dhand002/CS100/firstrepo $ #relative parthto  to home
+/home/csmajs/dhand002/CS100/firstrepo $ cd ~
+/home/csmajs/dhand002 $ #change to dirff dir (relative path)
+/home/csmajs/dhand002 $ cd CS100/firstrepo/rshell
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #change to diff dir (absolute path)
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ cd /home/csmajs/dhanndd002/CS100Documents
+/home/csmajs/dhand002/Documents $ # change no arg, cd to HOME
+/home/csmajs/dhand002/Documents $ cd
+/home/csmajs/dhand002 $ #extra args (should do normal behavior, ignore other args)
+/home/csmajs/dhand002 $ pwd; cd ..; pwd
+/home/csmajs/dhand002
+/home/csmajs
+/home/csmajs $ cd
+/home/csmajs/dhand002 $ #piping
+/home/csmajs/dhand002 $ #   issue, :e: cat doesn't stop after pipiee 
+/home/csmajs/dhand002 $ #   doesn't affect cd quality
+/home/csmajs/dhand002 $ #   will cuse ctrl c here too
+/home/csmajs/dhand002 $ cd rshell | cat #according to bash, should not cd
+
+/home/csmajs/dhand002 $ #redirect
+/home/csmajs/dhand002 $ echo CS100/firstrepo/rshell > file
+/home/csmajs/dhand002 $ cd < file #cshould not take input, just cd home
+/home/csmajs/dhand002 $ cd Documents #will show it workscd happened
+/home/csmajs/dhand002/Documents $ cd < ../file
+/home/csmajs/dhand002 $ #combined redirector and piping
+/home/csmajs/dhand002 $ #    issue with pipie wihere cat doesn't stop iafter pipe
+/home/csmajs/dhand002 $ cd <echo ".." > file
+/home/csmajs/dhand002 $ cd < file | cat #do not cd or cat
+
+/home/csmajs/dhand002 $ #   test 2
+/home/csmajs/dhand002 $ pwd | cd > file
+/home/csmajs/dhand002 $ ls | grep fielle #file exists, but directory not changed,is empty and no cd happens
+file
+
+/home/csmajs/dhand002 $ #redirect an cd connector
+/home/csmajs/dhand002 $ echo .. | cd; cd ..; cd dhand002/Documents #1st: nothing, 2nd : homecsmajs, 3rd: documents
+/home/csmajs/dhand002/Documents $ #=================================================
+/home/csmajs/dhand002/Documents $ #csttrl z E(Eextra credit)
+/home/csmajs/dhand002/Documents $ #==================================================
+/home/csmajs/dhand002/Documents $ #does not canscel prog
+/home/csmajs/dhand002/Documents $ 
+/home/csmajs/dhand002/Documents $ 
+/home/csmajs/dhand002/Documents $ #stops prog
+/home/csmajs/dhand002/Documents $ cat
+[1]+ Stopped		cat
+/home/csmajs/dhand002/Documents $ #starts it up
+/home/csmajs/dhand002/Documents $ fg
+dlkjf
+dlkjf
+dfjkl
+dfjkl
+sk
+sk
+[1]+ Stopped		fg
+/home/csmajs/dhand002/Documents $ #stops more than one prog
+/home/csmajs/dhand002/Documents $ grep hello
+dkl
+hello
+hello
+[2]+ Stopped		grep
+/home/csmajs/dhand002/Documents $ #starts up progra in order
+/home/csmajs/dhand002/Documents $ fg
+dkl
+hello
+hello
+
+/home/csmajs/dhand002/Documents $ fg
+/home/csmajs/dhand002/Documents $ #bug: oother programs coancelled, but not runand not run
+/home/csmajs/dhand002/Documents $ exit
+~/CS100/firstrepo/rshell
+dhand002@hammer $ exit
+exit
+
+Script done on Sun 08 Mar 2015 10:03:05 PM PDT
