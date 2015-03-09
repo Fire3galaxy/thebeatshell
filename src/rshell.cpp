@@ -213,6 +213,20 @@ int main() {
 
 		for (unsigned int i = 0; doExec && i < realcomsP.size(); i++) {
 			argv = &realcomsP.at(i).at(0); // initialize to char**
+			
+			// If piping, this command outputs to pipe
+			if (isPipe.at(i)) {
+				// move output's fd
+				if (-1 == (savefdpipe[1] = dup(STDOUT_FILENO))) {
+					perror("dup w/ pipe");
+					exit(-1);
+				}
+				// place pipe in output
+				if (-1 == dup2(fdpipe[1], STDOUT_FILENO)) {
+					perror("dup w/ pipe");
+					exit(-1);
+				}
+			}
 
 			if (strcmp(argv[0], ex) == 0) {
 				comPr.deleteCStrings(commands); // Has heap allocated memory, always should be dealt with
@@ -232,19 +246,6 @@ int main() {
 				signal(SIGINT, SIG_DFL);
 				signal(SIGTSTP, SIG_DFL);
 
-				// If piping, this command outputs to pipe
-				if (isPipe.at(i)) {
-					// move output's fd
-					if (-1 == (savefdpipe[1] = dup(STDOUT_FILENO))) {
-						perror("dup w/ pipe");
-						exit(-1);
-					}
-					// place pipe in output
-					if (-1 == dup2(fdpipe[1], STDOUT_FILENO)) {
-						perror("dup w/ pipe");
-						exit(-1);
-					}
-				}
 
 				char* cpathvar = getenv("PATH");
 				if (cpathvar == NULL) {
@@ -283,44 +284,6 @@ int main() {
 					exit(-1);
 				}
 
-				// if last command piped, next command's input is from pipe
-				if (isPipe.at(i)) {
-					// put output back in place
-					if (-1 == dup2(savefdpipe[1],STDOUT_FILENO)) {
-						perror("dup w/ pipe");
-						exit(-1);
-					}
-					// close newly dup'ed output
-					if (-1 == (close(savefdpipe[1]))) {
-						perror("close w/ pipe");
-						exit(-1);
-					}
-					// save input
-					if (-1 == (savefdpipe[0] = dup(STDIN_FILENO))) {
-						perror("dup w/ pipe");
-						exit(-1);
-					}
-					// put pipe into input
-					if (-1 == dup2(fdpipe[0],STDIN_FILENO)) {
-						perror("dup w/ pipe");
-						exit(-1);
-					}
-
-					resetPipe = true;
-				} else if (resetPipe) {
-					// put input back in place
-					if (-1 == dup2(savefdpipe[0],STDIN_FILENO)) {
-						perror("dup w/ pipe");
-						exit(-1);
-					}
-					// close newly dup'ed input
-					if (-1 == (close(savefdpipe[0]))) {
-						perror("dup w/ pipe");
-						exit(-1);
-					}
-
-					resetPipe = false;
-				}
 
 				exit(0);
 			} else if (pid > 0) { // parent!
@@ -403,6 +366,45 @@ int main() {
 						cout << "[" << stopped_pids.size() << "]+ Stopped\t\t" << argv[0] << endl;
 					}
 				}
+			}
+
+			// if last command piped, next command's input is from pipe
+			if (isPipe.at(i)) {
+				// put output back in place
+				if (-1 == dup2(savefdpipe[1],STDOUT_FILENO)) {
+					perror("dup w/ pipe");
+					exit(-1);
+				}
+				// close newly dup'ed output
+				if (-1 == (close(savefdpipe[1]))) {
+					perror("close w/ pipe");
+					exit(-1);
+				}
+				// save input
+				if (-1 == (savefdpipe[0] = dup(STDIN_FILENO))) {
+					perror("dup w/ pipe");
+					exit(-1);
+				}
+				// put pipe into input
+				if (-1 == dup2(fdpipe[0],STDIN_FILENO)) {
+					perror("dup w/ pipe");
+					exit(-1);
+				}
+
+				resetPipe = true;
+			} else if (resetPipe) {
+				// put input back in place
+				if (-1 == dup2(savefdpipe[0],STDIN_FILENO)) {
+					perror("dup w/ pipe");
+					exit(-1);
+				}
+				// close newly dup'ed input
+				if (-1 == (close(savefdpipe[0]))) {
+					perror("dup w/ pipe");
+					exit(-1);
+				}
+
+				resetPipe = false;
 			}
 		}
 
