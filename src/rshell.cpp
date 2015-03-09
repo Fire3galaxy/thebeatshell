@@ -304,7 +304,7 @@ int main() {
 				}
 
 				// cd
-				if (0 == strcmp(argv[0], "cd")) { // cd: PARENT PROCESS
+				if (0 == strcmp(argv[0], "cd") && !(isPipe.at(i)) && !resetPipe ) { // cd: PARENT PROCESS
 					string newDir = realcomsP.at(i).size() > 2 ? // Supports ~/ and no argument
 						replaceTilde(argv[1]) : replaceTilde("");
 
