@@ -1,0 +1,105 @@
+Script started on Sun 08 Mar 2015 09:28:37 PM PDT
+~
+dhand002@hammer $ cd CS100/firstrepo/rshell/
+~/CS100/firstrepo/rshell
+dhand002@hammer $ bin/rshell
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #change to cuurrent dir
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ cd .
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #change one dir up
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ cd ..
+/home/csmajs/dhand002/CS100/firstrepo $ #relative path ~/ to hHOE
+/home/csmajs/dhand002/CS100/firstrepo $ # HOME
+/home/csmajs/dhand002/CS100/firstrepo $ cd ~
+/home/csmajs/dhand002 $ #change to different dir (relative path)
+/home/csmajs/dhand002 $ cd CS100/csfirstrepo/rshell
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #change to different dir (absolute path)
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ cd /home/csmajs/dhand002/firstrepo/rshell/src
+rshell: cd: No such file or directory
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ cd /home
+/home $ cd /home/csmajs/dhand002
+/home/csmajs/dhand002 $ # extra #no argcd CS100
+/home/csmajs/dhand002/CS100 $ #no arg, go to homeHOME
+/home/csmajs/dhand002/CS100 $ cd
+/home/csmajs/dhand002 $ #extra arguments (should behave as normal)
+/home/csmajs/dhand002 $ cd CS100/firstrepo/rshell -THIS_IS_OP
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #connectors
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ pwd ; cd ..; pwd
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+/home/csmajs/dhand002/CS100/firstrepo
+/home/csmajs/dhand002/CS100/firstrepo $ #piping
+/home/csmajs/dhand002/CS100/firstrepo $ #  issue: cat doesn't stop after piepe
+/home/csmajs/dhand002/CS100/firstrepo $ #  wdoes not use affect cd
+/home/csmajs/dhand002/CS100/firstrepo $ cd rshell | cat #according to bash, dshould not cd
+
+/home/csmajs/dhand002/CS100/firstrepo $ #redirects
+/home/csmajs/dhand002/CS100/firstrepo $ echo CS100/firstrepo/rshell > file
+/home/csmajs/dhand002/CS100/firstrepo $ cd < file #should not take input, cd hto HOME
+/home/csmajs/dhand002 $ cd#combinged with reredirect with pipie
+/home/csmajs/dhand002 $ echo ".." > file
+/home/csmajs/dhand002 $ cd < file | cat #do not cd or cat otutput
+
+/home/csmajs/dhand002 $ # ttest 2
+/home/csmajs/dhand002 $ pwd | cd > file
+/home/csmajs/dhand002 $ ls # file esxists but directory not changed
+C:\nppdf32Log\debuglog.txt  Downloads		hs_err_pid9309.log  Pictures   theseus.cpp
+CS100			    Exercise 2 Lab 1	idea.cc		    Public     trash
+CS61			    file		idea.cpp	    script.rb  Videos
+Desktop			    hs_err_pid9250.log	kepler.cpp	    sports
+Documents		    hs_err_pid9270.log	Music		    Templates
+/home/csmajs/dhand002 $ cat file
+/home/csmajs/dhand002 $ #redirectors and connectors
+/home/csmajs/dhand002 $ echo .. | cd; cd .. ; cd Docuements #first one, nothing. second one, one level up, 3rd one, to Documents
+rshell: cd: No such file or directory
+/home/csmajs $ #no documents in this folder, whoops
+/home/csmajs $ ct#ctrl C test ---------------==============================================
+/home/csmajs $ #ctrl C tests
+/home/csmajs $ #==============================================
+/home/csmajs $ #just ctrl c
+/home/csmajs $ 
+/home/csmajs $ # dduring cat
+/home/csmajs $ cat
+
+/home/csmajs $ # during multiple commangsds
+/home/csmajs $ cat | grep hello
+hello
+hello
+
+/home/csmajs $ #program runs duringpipe algorithm here: run each program individually, so ctrl c had to be done in
+/home/csmajs $ #s#===============================================
+/home/csmajs $ #excecv tetssts
+/home/csmajs $ #===============================================
+/home/csmajs $ ls
+ls: cannot open directory .: Permission denied
+/home/csmajs $ cd dhand002
+/home/csmajs/dhand002 $ ls
+C:\nppdf32Log\debuglog.txt  Downloads		hs_err_pid9309.log  Pictures   theseus.cpp
+CS100			    Exercise 2 Lab 1	idea.cc		    Public     trash
+CS61			    file		idea.cpp	    script.rb  Videos
+Desktop			    hs_err_pid9250.log	kepler.cpp	    sports
+Documents		    hs_err_pid9270.log	Music		    Templates
+/home/csmajs/dhand002 $ #checkcd CS100/firstrepo /rshell #check that normal function works
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #chaeck for "." folder, last thing in PATH
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ a.out
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ ls
+a.out  errFile	getline.cpp  Makefile	rshell.o  src		 tests
+bin    ex1.cpp	LICENSE      README.md	runTests  statManEx.cpp
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ a.out ls
+HERE!!!!
+a.out  errFile	getline.cpp  Makefile	rshell.o  src		 tests
+bin    ex1.cpp	LICENSE      README.md	runTests  statManEx.cpp
+status: 0
+Now waiting for input to continue cat
+k
+status: 0
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #a.out had parameter for command testing.
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #oputput error if command fails
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ dlkjflk
+dlkjflk: No such file or directory
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ exit
+~/CS100/firstrepo/rshell
+dhand002@hammer $ exit[K[K[K[K#done testing.[K============================================
+~/CS100/firstrepo/rshell
+dhand002@hammer $ exit
+exit
+
+Script done on Sun 08 Mar 2015 09:39:37 PM PDT
