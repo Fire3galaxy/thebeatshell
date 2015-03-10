@@ -25,7 +25,7 @@ public:
 
 		// add every token to vector<string> words
 		// special exception for redirection sym: if #>, combine tokens
-		int countIR = 0, countOR = 0;
+		int countIR = 0, countOR = 0, countAMP = 0, countBAR = 0;
 		for (tokenizer::iterator it = parse.begin(); it != parse.end(); it++) {
 			if (*it == "<") {
 				int inpInd = -1;
@@ -67,7 +67,7 @@ public:
 			} else if (*it == "&") {
 				int inpInd = -1;
 				
-				for (int i = 0; i <= countOR; i++) inpInd = com.find_first_of('&', inpInd + 1);
+				for (int i = 0; i <= countAMP; i++) inpInd = com.find_first_of('&', inpInd + 1);
 
 				if (inpInd == -1) {
 					cerr << "find_first_of\n";
@@ -78,11 +78,11 @@ public:
 					words.back() += *it;
 				} else words.push_back(*it);
 
-				countOR++;
+				countAMP++;
 			} else if (*it == "|") {
 				int inpInd = -1;
 				
-				for (int i = 0; i <= countOR; i++) inpInd = com.find_first_of('|', inpInd + 1);
+				for (int i = 0; i <= countBAR; i++) inpInd = com.find_first_of('|', inpInd + 1);
 
 				if (inpInd == -1) {
 					cerr << "find_first_of\n";
@@ -93,7 +93,7 @@ public:
 					words.back() += *it;
 				} else words.push_back(*it);
 
-				countOR++;
+				countBAR++;
 			} else words.push_back(*it);
 		}
 

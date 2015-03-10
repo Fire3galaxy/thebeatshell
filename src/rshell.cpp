@@ -20,14 +20,15 @@
 using namespace boost;
 using namespace std;
 
+string getHost();
+string getLogin();
+string getCWD();
+void printPrompt();
+
 void input_sigHandler(int param) {
 	if (param == SIGINT) {
-		char currentDir[512];
-		if (NULL == (getcwd(currentDir, 512))) { // Currently outputs error that directory is too long. Don't like this FIXME
-			perror("getcwd");
-			currentDir[0] = '\0';
-		}
-		cout << '\n' << currentDir << " $ " << flush;
+		cout << '\n';
+		printPrompt();
 	}
 	if (param == SIGTSTP) {}
 }
@@ -57,6 +58,58 @@ string replaceTilde(const char* c) {
 	return s;
 }
 
+string addTilde(const char* c) {
+	string s = c;
+	char* C_HOME = getenv("HOME");
+	string HOME = C_HOME;
+	if (C_HOME != NULL && s.find(HOME) != string::npos) 
+		return s.replace(s.find(HOME), HOME.size(), "~");
+
+	return s;
+}
+
+string getCWD() {
+	char cDir[512]; // Current Working Directory
+	if (NULL == (getcwd(cDir, 512))) { // Currently outputs error that directory is too long. Don't like this FIXME
+		perror("getcwd");
+		cDir[0] = '\0';
+	}
+	return addTilde(cDir);
+}
+
+string getLogin() {
+	char* cLogin;
+	char blank[2] = "";
+	if (NULL == (cLogin = getlogin())) {
+		cLogin = blank;
+	}
+	
+	return cLogin;
+}
+	
+string getHost() {
+	char cHostname[512]; 
+	char* cHost;
+	if (-1 == (gethostname(cHostname, 512))) { // Currently outputs error that directory is too long. Don't like this FIXME
+		perror("gethostname");
+		return "";
+	} else cHost = cHostname;
+
+	return cHost;
+}
+
+void printPrompt() {
+	// CWD
+	string currentDir = getCWD();
+
+	// Login
+	const char* cLogin = getLogin().c_str();
+
+	// Host
+	const char* cHost = getHost().c_str();
+
+	cout << cLogin << "@" << cHost << ' ' << currentDir << " $ " << flush;
+}
 
 int main() {
 	list<int> stopped_pids;
@@ -68,14 +121,8 @@ int main() {
 		vector<char*> commands;
 		comParse comPr;
 
-		char currentDir[512]; // Current Working Directory
-		if (NULL == (getcwd(currentDir, 512))) { // Currently outputs error that directory is too long. Don't like this FIXME
-			perror("getcwd");
-			currentDir[0] = '\0';
-		}
-
 		do {
-			cout << currentDir << " $ " << flush;
+			printPrompt();
 			
 			string input = "";
 			getline(cin, input);	// Get command

@@ -1,60 +1,186 @@
-Script started on Sat 24 Jan 2015 12:00:57 AM PST
+Script started on Mon 09 Mar 2015 07:11:36 PM PDT
 ~
-dhand002@hammer $ exit./bin/rshell[8Pmake cleanls[Kcd CS100/firstrepo/rshell/[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[Kcd CS100/firstrepo/rshell/
-~/CS100/firstrepo/rshell
-dhand002@hammer $ make clean
-rm -fr rshell *.o bin
-~/CS100/firstrepo/rshell
-dhand002@hammer $ make
-g++ -ansi -pedantic -Wall -Werror   -c -o rshell.o src/rshell.cpp
-mkdir bin
-g++ -o rshell rshell.o
-mv rshell bin
-~/CS100/firstrepo/rshell
-dhand002@hammer $ ./bin/rshell
-$ exit    ls -a    #program
-bin  ex1.cpp  exec.script  Makefile  README.md	rshell.o  src  tests
-$ ls -arta    #basic parsing
-.  ..  bin  ex1.cpp  exec.script  .git	Makefile  README.md  rshell.o  src  tests  .vimrc
-$ ls -artatratratrarartararararatrarararra #ba  parsing with long string
-..  ex1.cpp  README.md	.vimrc	Makefile  tests  .git  src  exec.script  rshell.o  bin	.
-$ ls -aratratratratratratrararatratratratratratr atratr      -artatratratratratrarartatratratrtratratratratratra -rtartatratratratrtartratratrartratr -tarrartartatrtartratratrartatr #     -artartatratr ca  #can handle long strings        , many str     strings
-..  ex1.cpp  README.md	.vimrc	Makefile  tests  .git  src  exec.script  rshell.o  bin	.
-$ ls -trarf;sgjpei4ivnhsfhgovbshrendkjlhf -kjlshog irancehjaklf hdsahljk #c                                                                         ls ls ls ls ls ls ls #d can handle errors without bra eaking
-ls: cannot access ls: No such file or directory
-ls: cannot access ls: No such file or directory
-ls: cannot access ls: No such file or directory
-ls: cannot access ls: No such file or directory
-ls: cannot access ls: No such file or directory
-ls: cannot access ls: No such file or directory
-$ fjapeoivnjfjdklhgois ls #can handle no command error
-error in execvp: No such file or directory
-$ ls						#tabs after
-bin  ex1.cpp  exec.script  Makefile  README.md	rshell.o  src  tests
-$ 					ls #tabs before
-bin  ex1.cpp  exec.script  Makefile  README.md	rshell.o  src  tests
-$                pwd #t spaces before
+dhand002@hammer $ cs100
+[0;91m
+===============================================================================
+|                                                                             |
+| You have enabled settings specific for cs100.  Everything you do is being   |
+| recorded to measure your progress in the class.                             |
+|                                                                             |
+| Important commands for the class:                                           |
+|   * calcgrade.sh          displays a detailed breakdown of your grade       |
+|   * typespeed             practice typing unix commands                     |
+|                                                                             |
+| Important commands for general C++ programming:                             |
+|   * make                  don't call g++ manually; let make do the work!    |
+|   * gdb                   the GNU debugger                                  |
+|   * valgrind              get rid of your memory leaks                      |
+|   * cppcheck              static analysis tool                              |
+|   * man                   find help about any syscall / terminal command    |
+|                                                                             |
+===============================================================================
+[0m
+[s%%%%%%%%%%[u[0;32mdhand002[0;36m@[0;32mcs100[0;36m:[0;32m~[0;95m [0;36m$[0m cd CS100/0[Kfirstrepo/rshell/
+[s%%%%%%%%%%[u[0;32mdhand002[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/firstrepo/rshell[0;95m (exec) [0;36m$[0m cs100-runtests bin//[Krshell ex1.cpp [K[K[K[K[K[K[K[Ku[KrunTests/exec
+*****************
+* runTests/exec *
+*****************
+================================================================================
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ #basic functions, also a comment test, I guess.
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls
+a.out  bin  errFile  ex1.cpp  getline.cpp  LICENSE  ls.o  Makefile  README.md  rshell.o  runTests  src	statManEx.cpp  tests
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls -a
+.  ..  a.out  bin  errFile  ex1.cpp  getline.cpp  .git	LICENSE  ls.o  Makefile  README.md  rshell.o  runTests	src  statManEx.cpp  tests  .vimrc
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls -a -l
+total 1576
+drwx------ 7 dhand002 csmajs   4096 Mar  9 19:01 .
+drwx------ 6 dhand002 csmajs   4096 Mar  8 21:28 ..
+-rwx------ 1 dhand002 csmajs   9213 Mar  9 18:41 a.out
+drwx------ 2 dhand002 csmajs   4096 Mar  9 19:01 bin
+-rw------- 1 dhand002 csmajs     75 Mar  7 13:45 errFile
+-rw------- 1 dhand002 csmajs   1977 Mar  9 18:32 ex1.cpp
+-rw------- 1 dhand002 csmajs   1340 Mar  9 02:00 getline.cpp
+drwx------ 8 dhand002 csmajs   4096 Mar  9 17:59 .git
+-rw------- 1 dhand002 csmajs 106344 Jan 24 00:20 LICENSE
+-rw------- 1 dhand002 csmajs 481256 Mar  9 17:49 ls.o
+-rw------- 1 dhand002 csmajs    354 Mar  9 01:04 Makefile
+-rw------- 1 dhand002 csmajs     81 Mar  9 01:04 README.md
+-rw------- 1 dhand002 csmajs 934032 Mar  9 19:01 rshell.o
+drwx------ 2 dhand002 csmajs   4096 Mar  9 19:06 runTests
+drwx------ 2 dhand002 csmajs   4096 Mar  9 19:01 src
+-rw------- 1 dhand002 csmajs   4993 Feb  8 22:29 statManEx.cpp
+drwx------ 2 dhand002 csmajs   4096 Mar  9 01:04 tests
+-rw------- 1 dhand002 csmajs    201 Mar  6 17:57 .vimrc
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ #function in curr folder
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ a.out #in current folder
+Ex1.cpp is here!
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ #basic connectors
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ pwd; pwd #just run twice
 /home/csmajs/dhand002/CS100/firstrepo/rshell
-$ pwd                              #spaced s afterward
 /home/csmajs/dhand002/CS100/firstrepo/rshell
-$ ls#                    comments should work still     wil spaces        th spaces
-bin  ex1.cpp  exec.script  Makefile  README.md	rshell.o  src  tests
-$ 
-Segmentation fault
-~/CS100/firstrepo/rshell
-dhand002@hammer $ ./bin/rshell #known s[Kissue, segfault at empty input
-$                                 #space     empty, b spaces
-Segmentation fault
-~/CS100/firstrepo/rshell
-dhand002@hammer $ #known issue, s[Kempty command segfaults
-~/CS100/firstrepo/rshell
-dhand002@hammer $ ./bin/rshell
-$ true
-$ ex  #more tests           exit #tes   exit works
-~/CS100/firstrepo/rshell
-dhand002@hammer $ $[K#more tests l[Kwhen connectors available
-~/CS100/firstrepo/rshell
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ true && echo true #should output true
+true
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ false && echo false #should not output
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ true || echo true #should not output
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ false || echo false #should output false
+false
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ # Comment Tests!!!!!!!!!!!!
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ echo This is #Sparta!!!!
+This is
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls#Pizza!!!!
+a.out  bin  errFile  ex1.cpp  getline.cpp  LICENSE  ls.o  Makefile  README.md  rshell.o  runTests  src	statManEx.cpp  tests
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ #Space tests
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ #--------------should run normally
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls
+a.out  bin  errFile  ex1.cpp  getline.cpp  LICENSE  ls.o  Makefile  README.md  rshell.o  runTests  src	statManEx.cpp  tests
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls 			../
+a.out  cslabs  file  handle_signals.cpp  main.cpp  README  rshell  ucr-cs100
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ true && 					echo You can't handle 		the truth
+You can't handle the truth
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ #Many arguments
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ echo This is a really long and reasonable test but i didn't want a bunch of flags!!!!
+This is a really long and reasonable test but i didn't want a bunch of flags!!!!
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls -a -l -alalalalalal -a -l -a -l
+total 1576
+drwx------ 7 dhand002 csmajs   4096 Mar  9 19:01 .
+drwx------ 6 dhand002 csmajs   4096 Mar  8 21:28 ..
+-rwx------ 1 dhand002 csmajs   9213 Mar  9 18:41 a.out
+drwx------ 2 dhand002 csmajs   4096 Mar  9 19:01 bin
+-rw------- 1 dhand002 csmajs     75 Mar  7 13:45 errFile
+-rw------- 1 dhand002 csmajs   1977 Mar  9 18:32 ex1.cpp
+-rw------- 1 dhand002 csmajs   1340 Mar  9 02:00 getline.cpp
+drwx------ 8 dhand002 csmajs   4096 Mar  9 17:59 .git
+-rw------- 1 dhand002 csmajs 106344 Jan 24 00:20 LICENSE
+-rw------- 1 dhand002 csmajs 481256 Mar  9 17:49 ls.o
+-rw------- 1 dhand002 csmajs    354 Mar  9 01:04 Makefile
+-rw------- 1 dhand002 csmajs     81 Mar  9 01:04 README.md
+-rw------- 1 dhand002 csmajs 934032 Mar  9 19:01 rshell.o
+drwx------ 2 dhand002 csmajs   4096 Mar  9 19:06 runTests
+drwx------ 2 dhand002 csmajs   4096 Mar  9 19:01 src
+-rw------- 1 dhand002 csmajs   4993 Feb  8 22:29 statManEx.cpp
+drwx------ 2 dhand002 csmajs   4096 Mar  9 01:04 tests
+-rw------- 1 dhand002 csmajs    201 Mar  6 17:57 .vimrc
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ #exit test
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ exit
+
+================================================================================
+***********************
+* runTests/exec2_exit *
+***********************
+================================================================================
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ #Mixing connectors
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls && pwd && echo FIRE #all should happen
+a.out  bin  errFile  ex1.cpp  getline.cpp  LICENSE  ls.o  Makefile  README.md  rshell.o  runTests  src	statManEx.cpp  tests
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+FIRE
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls; pwd && echo FIRE #all should happen
+a.out  bin  errFile  ex1.cpp  getline.cpp  LICENSE  ls.o  Makefile  README.md  rshell.o  runTests  src	statManEx.cpp  tests
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+FIRE
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls && pwd || echo FIRE #pwd happens, echo doesn't
+a.out  bin  errFile  ex1.cpp  getline.cpp  LICENSE  ls.o  Makefile  README.md  rshell.o  runTests  src	statManEx.cpp  tests
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls || pwd || echo FIRE || pwd #ls and echo happens, not pwd
+a.out  bin  errFile  ex1.cpp  getline.cpp  LICENSE  ls.o  Makefile  README.md  rshell.o  runTests  src	statManEx.cpp  tests
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls || pwd; echo FIRE && pwd #pwd doesn't happen first time, echo and pwd does
+a.out  bin  errFile  ex1.cpp  getline.cpp  LICENSE  ls.o  Makefile  README.md  rshell.o  runTests  src	statManEx.cpp  tests
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+FIRE
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls || pwd || echo FIRE || pwd #ls and echo happens, not pwd
+a.out  bin  errFile  ex1.cpp  getline.cpp  LICENSE  ls.o  Makefile  README.md  rshell.o  runTests  src	statManEx.cpp  tests
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls && pwd && echo FIRE && pwd #ls and echo happens, not pwd
+a.out  bin  errFile  ex1.cpp  getline.cpp  LICENSE  ls.o  Makefile  README.md  rshell.o  runTests  src	statManEx.cpp  tests
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+FIRE
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ #Exit as parameter
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls exit #should fail
+ls: cannot access exit: No such file or directory
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ #Exit with parameters
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ exit Pizza pie #should be normal
+
+
+================================================================================
+************************
+* runTests/exec3_exit2 *
+************************
+================================================================================
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ #Connectors adjacent to commands
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ pwd&&pwd #2 pwd
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ pwd||pwd #1 pwd
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ echo infinite&&echo blade #infinite blade
+infinite
+blade
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ echo infinite||echo blade;echo pie! #infinite pie!
+infinite
+blade
+pie!
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ #syntax errors
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls && #should fail
+rshell: missing arg after &&
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls & ls #should fail (need two)
+rshell: syntax error at &
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ ls | ls #should fail
+a.out  bin  errFile  ex1.cpp  getline.cpp  LICENSE  ls.o  Makefile  README.md  rshell.o  runTests  src	statManEx.cpp  tests
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ #Exit in chain of commands
+dhand002@hammer.cs.ucr.edu ~/CS100/firstrepo/rshell $ pwd; pwd && exit
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+/home/csmajs/dhand002/CS100/firstrepo/rshell
+echo if you see this, it failed
+
+================================================================================
+[s%%%%%%%%%%[u[0;32mdhand002[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/firstrepo/rshell[0;95m (exec) [0;36m$[0m exit
+exit
+~
 dhand002@hammer $ exit
 exit
 
-Script done on Sat 24 Jan 2015 12:07:57 AM PST
+Script done on Mon 09 Mar 2015 07:12:08 PM PDT

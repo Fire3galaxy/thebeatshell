@@ -1,176 +1,267 @@
-Script started on Mon 09 Feb 2015 12:10:21 AM PST
+Script started on Mon 09 Mar 2015 06:02:09 PM PDT
 ~
 dhand002@hammer $ cd CS100/firstrepo/rshell/
 ~/CS100/firstrepo/rshell
-dhand002@hammer $ ma[K[Kcd CS100/firstrepo/rshell/[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[Kbin/lsmake ls[1Pbin/ls
-a.out  bin  ex1.cpp  LICENSE  ls.o  Makefile  README.md  src  statManEx.cpp  tests  
+dhand002@hammer $ cd CS100/firstrepo/rshell/[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[Kcs100[1Pexitcd CS100/firstrepo/rshell/[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Kcs100 [K-runt[KTe[K[Ktests bin/rshell runTests/ls
+bash: cs100-runtests: command not found
 ~/CS100/firstrepo/rshell
-dhand002@hammer $ bin/ls -l
--rwx------ dhand002 csmajs 9822 a.out
-~/CS100/firstrepo/rshell
-dhand002@hammer $ bin/ls -l[Ka
-.  ..  a.out  bin  ex1.cpp  .git  LICENSE  ls.o  Makefile  README.md  src  statManEx.cpp  tests  .vimrc  
-~/CS100/firstrepo/rshell
-dhand002@hammer $ bin/ls -a[K[K.
-a.out  bin  ex1.cpp  LICENSE  ls.o  Makefile  README.md  src  statManEx.cpp  tests  
-~/CS100/firstrepo/rshell
-dhand002@hammer $ bin/ls . [K.
-a.out  cslabs  main.cpp  README  rshell  ucr-cs100  
-~/CS100/firstrepo/rshell
-dhand002@hammer $ bin/ls ../cs[K[Kucr-cs100/
-assignments  gitlearn  lecture-notes  LICENSE  people  README.md  textbook  
-~/CS100/firstrepo/rshell
-dhand002@hammer $ bin/ls ../ucr-cs100/ .
-../ucr-cs100/:
-assignments  gitlearn  lecture-notes  LICENSE  people  README.md  textbook  
-
+dhand002@hammer $ cs100
+[0;91m
+===============================================================================
+|                                                                             |
+| You have enabled settings specific for cs100.  Everything you do is being   |
+| recorded to measure your progress in the class.                             |
+|                                                                             |
+| Important commands for the class:                                           |
+|   * calcgrade.sh          displays a detailed breakdown of your grade       |
+|   * typespeed             practice typing unix commands                     |
+|                                                                             |
+| Important commands for general C++ programming:                             |
+|   * make                  don't call g++ manually; let make do the work!    |
+|   * gdb                   the GNU debugger                                  |
+|   * valgrind              get rid of your memory leaks                      |
+|   * cppcheck              static analysis tool                              |
+|   * man                   find help about any syscall / terminal command    |
+|                                                                             |
+===============================================================================
+[0m
+[s%%%%%%%%%%[u[0;32mdhand002[0;36m@[0;32mcs100[0;36m:[0;32m~[0;95m [0;36m$[0m bin[K[K[Kcd S[KCS100/firstrepo/rshell/
+[s%%%%%%%%%%[u[0;32mdhand002[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/firstrepo/rshell[0;95m (ls) [0;36m$[0m b[Kcs100-runtests bin/rshell ru[Kn[KunTests/ls 50000
+***************
+* runTests/ls *
+***************
+================================================================================
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #basic ls
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ bin/ls
+[32ma.out  [0m[49;0m[34mbin  [0m[49;0merrFile  [0m[49;0mex1.cpp  [0m[49;0mgetline.cpp  [0m[49;0mLICENSE  [0m[49;0mls.o  [0m[49;0mMakefile  [0m[49;0mREADME.md  [0m[49;0mrshell.o  [0m[49;0m[34mrunTests  [0m[49;0m[34msrc  [0m[49;0mstatManEx.cpp  [0m[49;0m[34mtests  [0m[49;0m
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #-a
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ bin/ls -a
+[34m.  [0m[49;0m[34m..  [0m[49;0m[32ma.out  [0m[49;0m[34mbin  [0m[49;0merrFile  [0m[49;0mex1.cpp  [0m[49;0mgetline.cpp  [0m[49;0m[34m.git  [0m[49;0mLICENSE  [0m[49;0mls.o  [0m[49;0mMakefile  [0m[49;0mREADME.md  [0m[49;0mrshell.o  [0m[49;0m[34mrunTests  [0m[49;0m[34msrc  [0m[49;0mstatManEx.cpp  [0m[49;0m[34mtests  [0m[49;0m.vimrc  [0m[49;0m
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #-l
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ bin/ls -l
+-rwx------ dhand002 csmajs  11247 Mar  9 02:01[32m a.out
+[0m[49;0mdrwx------ dhand002 csmajs   4096 Mar  9 17:49[34m bin
+[0m[49;0m-rw------- dhand002 csmajs     75 Mar  7 13:45 errFile
+[0m[49;0m-rw------- dhand002 csmajs   1897 Feb 21 21:51 ex1.cpp
+[0m[49;0m-rw------- dhand002 csmajs   1340 Mar  9 02:00 getline.cpp
+[0m[49;0m-rw------- dhand002 csmajs 106344 Jan 24 00:20 LICENSE
+[0m[49;0m-rw------- dhand002 csmajs 481256 Mar  9 17:49 ls.o
+[0m[49;0m-rw------- dhand002 csmajs    354 Mar  9 01:04 Makefile
+[0m[49;0m-rw------- dhand002 csmajs     81 Mar  9 01:04 README.md
+[0m[49;0m-rw------- dhand002 csmajs 929120 Mar  9 17:05 rshell.o
+[0m[49;0mdrwx------ dhand002 csmajs   4096 Mar  9 17:56[34m runTests
+[0m[49;0mdrwx------ dhand002 csmajs   4096 Mar  9 17:49[34m src
+[0m[49;0m-rw------- dhand002 csmajs   4993 Feb  8 22:29 statManEx.cpp
+[0m[49;0mdrwx------ dhand002 csmajs   4096 Mar  9 01:04[34m tests
+[0m[49;0m/home/csmajs/dhand002/CS100/firstrepo/rshell $ #-R
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ bin/ls -R
 .:
-a.out  bin  ex1.cpp  LICENSE  ls.o  Makefile  README.md  src  statManEx.cpp  tests  
-~/CS100/firstrepo/rshell
-dhand002@hammer $ bin/ls ../ucr-cs100/ . ~/ .. .. ..
-../ucr-cs100/:
-assignments  gitlearn  lecture-notes  LICENSE  people  README.md  textbook  
+[32ma.out  [0m[49;0m[34mbin  [0m[49;0merrFile  [0m[49;0mex1.cpp  [0m[49;0mgetline.cpp  [0m[49;0mLICENSE  [0m[49;0mls.o  [0m[49;0mMakefile  [0m[49;0mREADME.md  [0m[49;0mrshell.o  [0m[49;0m[34mrunTests  [0m[49;0m[34msrc  [0m[49;0mstatManEx.cpp  [0m[49;0m[34mtests  [0m[49;0m
 
+./tests:
+exec.script  [0m[49;0mls.script  [0m[49;0mpiping.script  [0m[49;0mredirTests.txt  [0m[49;0msignals.script  [0m[49;0m
+
+./src:
+[32ma.out  [0m[49;0mcomParse.h  [0m[49;0mcp.cpp  [0m[49;0mdigit.cpp  [0m[49;0mdigit.h  [0m[49;0mls.cpp  [0m[49;0mls.h  [0m[49;0mredirect.h  [0m[49;0mrshell.cpp  [0m[49;0mwidthTest.cpp  [0m[49;0m
+
+./bin:
+[32mls  [0m[49;0m[32mrshell  [0m[49;0m
+
+./runTests:
+cd  [0m[49;0m[32mctrlC  [0m[49;0m[32mexecv  [0m[49;0mls  [0m[49;0mtest  [0m[49;0m
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #multiple flags
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ cd src #.git folder is HUGE
+/home/csmajs/dhand002/CS100/firstrepo/rshell/src $ ../bin/ls -a -l -R
 .:
-a.out  bin  ex1.cpp  LICENSE  ls.o  Makefile  README.md  src  statManEx.cpp  tests  
-
-/home/csmajs/dhand002/:
-C:\nppdf32Log\debuglog.txt  Documents           hs_err_pid9270.log  kepler.cpp  script.rb    
-CS100                       Downloads           hs_err_pid9309.log  Music       sports       
-CS61                        Exercise 2 Lab 1    idea.cc             Pictures    Templates    
-Desktop                     hs_err_pid9250.log  idea.cpp            Public      theseus.cpp  
-
-..:
-a.out  cslabs  main.cpp  README  rshell  ucr-cs100  
-
-..:
-a.out  cslabs  main.cpp  README  rshell  ucr-cs100  
-
-..:
-a.out  cslabs  main.cpp  README  rshell  ucr-cs100  
-~/CS100/firstrepo/rshell
-dhand002@hammer $ bin/ls ../ucr-cs100/ . ~/ .. .. .. -a
-../ucr-cs100/:
-.   assignments  .gitignore  .gitmodules    LICENSE  README.md  
-..  .git         gitlearn    lecture-notes  people   textbook   
-
+total 80
+drwx------ 2 dhand002 csmajs  4096 Mar  9 17:49 .
+drwx------ 7 dhand002 csmajs  4096 Mar  9 17:49 ..
+-rwx------ 1 dhand002 csmajs 10182 Mar  7 22:18 a.out
+-rw------- 1 dhand002 csmajs  3701 Mar  9 01:04 comParse.h
+-rw------- 1 dhand002 csmajs  5824 Mar  9 01:04 cp.cpp
+-rw------- 1 dhand002 csmajs   441 Mar  7 22:18 digit.cpp
+-rw------- 1 dhand002 csmajs   372 Mar  9 01:04 digit.h
+-rw------- 1 dhand002 csmajs  4384 Mar  9 17:42 ls.cpp
+-rw------- 1 dhand002 csmajs  8051 Mar  9 17:49 ls.h
+-rw------- 1 dhand002 csmajs  3049 Mar  9 01:04 redirect.h
+-rw------- 1 dhand002 csmajs 15365 Mar  9 17:05 rshell.cpp
+-rw------- 1 dhand002 csmajs    93 Feb  7 10:11 widthTest.cpp
+/home/csmajs/dhand002/CS100/firstrepo/rshell/src $ ../bin/ls -R -a -l
 .:
-.  ..  a.out  bin  ex1.cpp  .git  LICENSE  ls.o  Makefile  README.md  src  statManEx.cpp  tests  .vimrc  
-
-/home/csmajs/dhand002/:
-.                                         .execooo13rMou  .execooovK8Won      
-..                                        .execooo2H9geJ  .execooovMLhGi      
-.adobe                                    .execooo2yLhyp  .execoooVRI6nr      
-.bash_history                             .execooo3BYfil  .execooovuktkt      
-.bash_logout                              .execooo3tLaVj  .execoooWKIn8R      
-.bashrc                                   .execooo4ee69y  .execoooyPyUbk      
-C:\nppdf32Log\debuglog.txt                .execooo5mQ1mE  .execooozWZ0ey      
-.cache                                    .execooo5YU598  .execooozXY9Ul      
-.codeblocks                               .execooo5ZVSoE  .execoooZyIFiM      
-.config                                   .execooo6qOa8m  Exercise 2 Lab 1    
-CS100                                     .execooo80sWFn  .fontconfig         
-CS61                                      .execooo8Y0Gg6  .gconf              
-.dbus                                     .execooob89zBz  .gconfd             
-.DCOPserver_well.cs.ucr.edu_:1014         .execoooBJgy29  .gitlearn           
-.DCOPserver_well.cs.ucr.edu__1014         .execooocCUpDa  .gnome              
-.DCOPserver_well.cs.ucr.edu_localhost:11  .execoooEHoWkh  .gnome2             
-.DCOPserver_well.cs.ucr.edu_localhost:13  .execoooFHCsGx  .gnome2_private     
-.DCOPserver_well.cs.ucr.edu_localhost:15  .execoooFRUb7H  .gnote              
-.DCOPserver_well.cs.ucr.edu_localhost:19  .execooofVGBd1  .gnupg              
-.DCOPserver_well.cs.ucr.edu_localhost:29  .execoooGFXwOQ  .googleearth        
-.DCOPserver_well.cs.ucr.edu_localhost:46  .execooognfPP6  .gstreamer-0.10     
-.DCOPserver_well.cs.ucr.edu_localhost_11  .execoooHh9ebs  .gtk-bookmarks      
-.DCOPserver_well.cs.ucr.edu_localhost_13  .execoooIwHvef  .gtkrc-1.2-gnome2   
-.DCOPserver_well.cs.ucr.edu_localhost_15  .execoooJR2j61  .gvfs               
-.DCOPserver_well.cs.ucr.edu_localhost_19  .execoooLAXAcn  hs_err_pid9250.log  
-.DCOPserver_well.cs.ucr.edu_localhost_29  .execooomQ9U4Y  hs_err_pid9270.log  
-.DCOPserver_well.cs.ucr.edu_localhost_46  .execooonFgLgQ  hs_err_pid9309.log  
-.DCOPserver_well.cs.ucr.edu_NODISPLAY     .execoooNk8vwo  .ICEauthority       
-Desktop                                   .execooonkNDts  idea.cc             
-.dmrc                                     .execoooOq1Yl5  idea.cpp            
-Documents                                 .execoooPH7URm  .imsettings.log     
-Downloads                                 .execooorxqqz3  .kde                
-.eggcups                                  .execooosB9wKN  kepler.cpp          
-.emacs.d                                  .execoootE3t5A  .lesshst            
-.esd_auth                                 .execooouP3ZwI  .local              
-.execooo10pqJO                            .execoooUV7YTQ  .logfactor5         
-
-..:
-.  ..  a.out  cslabs  .git  main.cpp  README  rshell  ucr-cs100  
-
-..:
-.  ..  a.out  cslabs  .git  main.cpp  README  rshell  ucr-cs100  
-
-..:
-.  ..  a.out  cslabs  .git  main.cpp  README  rshell  ucr-cs100  
-~/CS100/firstrepo/rshell
-dhand002@hammer $ bin/ls ../ucr-cs100/ . ~/ .. .. .. -a[K[K[K[C[C[C[C[4h-[4l[4ha[4l[4h [4l
-../ucr-cs100/:
-.   assignments  .gitignore  .gitmodules    LICENSE  README.md  
-..  .git         gitlearn    lecture-notes  people   textbook   
-
+total 80
+drwx------ 2 dhand002 csmajs  4096 Mar  9 17:49 .
+drwx------ 7 dhand002 csmajs  4096 Mar  9 17:49 ..
+-rwx------ 1 dhand002 csmajs 10182 Mar  7 22:18 a.out
+-rw------- 1 dhand002 csmajs  3701 Mar  9 01:04 comParse.h
+-rw------- 1 dhand002 csmajs  5824 Mar  9 01:04 cp.cpp
+-rw------- 1 dhand002 csmajs   441 Mar  7 22:18 digit.cpp
+-rw------- 1 dhand002 csmajs   372 Mar  9 01:04 digit.h
+-rw------- 1 dhand002 csmajs  4384 Mar  9 17:42 ls.cpp
+-rw------- 1 dhand002 csmajs  8051 Mar  9 17:49 ls.h
+-rw------- 1 dhand002 csmajs  3049 Mar  9 01:04 redirect.h
+-rw------- 1 dhand002 csmajs 15365 Mar  9 17:05 rshell.cpp
+-rw------- 1 dhand002 csmajs    93 Feb  7 10:11 widthTest.cpp
+/home/csmajs/dhand002/CS100/firstrepo/rshell/src $ ../bin/ls -alR
 .:
-.  ..  a.out  bin  ex1.cpp  .git  LICENSE  ls.o  Makefile  README.md  src  statManEx.cpp  tests  .vimrc  
+total 80
+drwx------ 2 dhand002 csmajs  4096 Mar  9 17:49 .
+drwx------ 7 dhand002 csmajs  4096 Mar  9 17:49 ..
+-rwx------ 1 dhand002 csmajs 10182 Mar  7 22:18 a.out
+-rw------- 1 dhand002 csmajs  3701 Mar  9 01:04 comParse.h
+-rw------- 1 dhand002 csmajs  5824 Mar  9 01:04 cp.cpp
+-rw------- 1 dhand002 csmajs   441 Mar  7 22:18 digit.cpp
+-rw------- 1 dhand002 csmajs   372 Mar  9 01:04 digit.h
+-rw------- 1 dhand002 csmajs  4384 Mar  9 17:42 ls.cpp
+-rw------- 1 dhand002 csmajs  8051 Mar  9 17:49 ls.h
+-rw------- 1 dhand002 csmajs  3049 Mar  9 01:04 redirect.h
+-rw------- 1 dhand002 csmajs 15365 Mar  9 17:05 rshell.cpp
+-rw------- 1 dhand002 csmajs    93 Feb  7 10:11 widthTest.cpp
+/home/csmajs/dhand002/CS100/firstrepo/rshell/src $ ../bin/ls -la
+total 80
+drwx------ 2 dhand002 csmajs  4096 Mar  9 17:49 .
+drwx------ 7 dhand002 csmajs  4096 Mar  9 17:49 ..
+-rwx------ 1 dhand002 csmajs 10182 Mar  7 22:18 a.out
+-rw------- 1 dhand002 csmajs  3701 Mar  9 01:04 comParse.h
+-rw------- 1 dhand002 csmajs  5824 Mar  9 01:04 cp.cpp
+-rw------- 1 dhand002 csmajs   441 Mar  7 22:18 digit.cpp
+-rw------- 1 dhand002 csmajs   372 Mar  9 01:04 digit.h
+-rw------- 1 dhand002 csmajs  4384 Mar  9 17:42 ls.cpp
+-rw------- 1 dhand002 csmajs  8051 Mar  9 17:49 ls.h
+-rw------- 1 dhand002 csmajs  3049 Mar  9 01:04 redirect.h
+-rw------- 1 dhand002 csmajs 15365 Mar  9 17:05 rshell.cpp
+-rw------- 1 dhand002 csmajs    93 Feb  7 10:11 widthTest.cpp
+/home/csmajs/dhand002/CS100/firstrepo/rshell/src $ ../bin/ls -aR
+.:
+.  ..  a.out  comParse.h  cp.cpp  digit.cpp  digit.h  ls.cpp  ls.h  redirect.h	rshell.cpp  widthTest.cpp
+/home/csmajs/dhand002/CS100/firstrepo/rshell/src $ ../bin/ls -Ra
+.:
+.  ..  a.out  comParse.h  cp.cpp  digit.cpp  digit.h  ls.cpp  ls.h  redirect.h	rshell.cpp  widthTest.cpp
+/home/csmajs/dhand002/CS100/firstrepo/rshell/src $ ../bin/ls -lR
+.:
+total 72
+-rwx------ 1 dhand002 csmajs 10182 Mar  7 22:18 a.out
+-rw------- 1 dhand002 csmajs  3701 Mar  9 01:04 comParse.h
+-rw------- 1 dhand002 csmajs  5824 Mar  9 01:04 cp.cpp
+-rw------- 1 dhand002 csmajs   441 Mar  7 22:18 digit.cpp
+-rw------- 1 dhand002 csmajs   372 Mar  9 01:04 digit.h
+-rw------- 1 dhand002 csmajs  4384 Mar  9 17:42 ls.cpp
+-rw------- 1 dhand002 csmajs  8051 Mar  9 17:49 ls.h
+-rw------- 1 dhand002 csmajs  3049 Mar  9 01:04 redirect.h
+-rw------- 1 dhand002 csmajs 15365 Mar  9 17:05 rshell.cpp
+-rw------- 1 dhand002 csmajs    93 Feb  7 10:11 widthTest.cpp
+/home/csmajs/dhand002/CS100/firstrepo/rshell/src $ ../bin/ls -R -l
+.:
+total 72
+-rwx------ 1 dhand002 csmajs 10182 Mar  7 22:18 a.out
+-rw------- 1 dhand002 csmajs  3701 Mar  9 01:04 comParse.h
+-rw------- 1 dhand002 csmajs  5824 Mar  9 01:04 cp.cpp
+-rw------- 1 dhand002 csmajs   441 Mar  7 22:18 digit.cpp
+-rw------- 1 dhand002 csmajs   372 Mar  9 01:04 digit.h
+-rw------- 1 dhand002 csmajs  4384 Mar  9 17:42 ls.cpp
+-rw------- 1 dhand002 csmajs  8051 Mar  9 17:49 ls.h
+-rw------- 1 dhand002 csmajs  3049 Mar  9 01:04 redirect.h
+-rw------- 1 dhand002 csmajs 15365 Mar  9 17:05 rshell.cpp
+-rw------- 1 dhand002 csmajs    93 Feb  7 10:11 widthTest.cpp
+/home/csmajs/dhand002/CS100/firstrepo/rshell/src $ ../bin/ls -Rl
+.:
+total 72
+-rwx------ 1 dhand002 csmajs 10182 Mar  7 22:18 a.out
+-rw------- 1 dhand002 csmajs  3701 Mar  9 01:04 comParse.h
+-rw------- 1 dhand002 csmajs  5824 Mar  9 01:04 cp.cpp
+-rw------- 1 dhand002 csmajs   441 Mar  7 22:18 digit.cpp
+-rw------- 1 dhand002 csmajs   372 Mar  9 01:04 digit.h
+-rw------- 1 dhand002 csmajs  4384 Mar  9 17:42 ls.cpp
+-rw------- 1 dhand002 csmajs  8051 Mar  9 17:49 ls.h
+-rw------- 1 dhand002 csmajs  3049 Mar  9 01:04 redirect.h
+-rw------- 1 dhand002 csmajs 15365 Mar  9 17:05 rshell.cpp
+-rw------- 1 dhand002 csmajs    93 Feb  7 10:11 widthTest.cpp
+/home/csmajs/dhand002/CS100/firstrepo/rshell/src $ #arguments
+/home/csmajs/dhand002/CS100/firstrepo/rshell/src $ cd ..
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ bin/ls /
+[34mbin   [0m[49;0mC:\nppdf32Log\debuglog.txt  [0m[49;0m[34mclass  [0m[49;0m[34metc    [0m[49;0m[34mhome  [0m[49;0m[34mlib64       [0m[49;0m[34mmedia  [0m[49;0m[34mmnt  [0m[49;0m[34mopt   [0m[49;0m[34mroot  [0m[49;0m[34mselinux  [0m[49;0m[34msys  [0m[49;0m[34musr  [0m[49;0m
+[34mboot  [0m[49;0m[34mcgroup                      [0m[49;0m[34mdev    [0m[49;0m[34mextra  [0m[49;0m[34mlib   [0m[49;0m[34mlost+found  [0m[49;0m[34mmisc   [0m[49;0m[34mnet  [0m[49;0m[34mproc  [0m[49;0m[34msbin  [0m[49;0m[34msrv      [0m[49;0m[34mtmp  [0m[49;0m[34mvar  [0m[49;0m
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ bin/ls ../ ./src #2 args
+../:
+[32ma.out  [0m[49;0m[34mcslabs  [0m[49;0mfile  [0m[49;0mhandle_signals.cpp  [0m[49;0mmain.cpp  [0m[49;0mREADME  [0m[49;0m[34mrshell  [0m[49;0m[34mucr-cs100  [0m[49;0m
 
-/home/csmajs/dhand002/:
-.                                         .execooo13rMou  .execooovK8Won      
-..                                        .execooo2H9geJ  .execooovMLhGi      
-.adobe                                    .execooo2yLhyp  .execoooVRI6nr      
-.bash_history                             .execooo3BYfil  .execooovuktkt      
-.bash_logout                              .execooo3tLaVj  .execoooWKIn8R      
-.bashrc                                   .execooo4ee69y  .execoooyPyUbk      
-C:\nppdf32Log\debuglog.txt                .execooo5mQ1mE  .execooozWZ0ey      
-.cache                                    .execooo5YU598  .execooozXY9Ul      
-.codeblocks                               .execooo5ZVSoE  .execoooZyIFiM      
-.config                                   .execooo6qOa8m  Exercise 2 Lab 1    
-CS100                                     .execooo80sWFn  .fontconfig         
-CS61                                      .execooo8Y0Gg6  .gconf              
-.dbus                                     .execooob89zBz  .gconfd             
-.DCOPserver_well.cs.ucr.edu_:1014         .execoooBJgy29  .gitlearn           
-.DCOPserver_well.cs.ucr.edu__1014         .execooocCUpDa  .gnome              
-.DCOPserver_well.cs.ucr.edu_localhost:11  .execoooEHoWkh  .gnome2             
-.DCOPserver_well.cs.ucr.edu_localhost:13  .execoooFHCsGx  .gnome2_private     
-.DCOPserver_well.cs.ucr.edu_localhost:15  .execoooFRUb7H  .gnote              
-.DCOPserver_well.cs.ucr.edu_localhost:19  .execooofVGBd1  .gnupg              
-.DCOPserver_well.cs.ucr.edu_localhost:29  .execoooGFXwOQ  .googleearth        
-.DCOPserver_well.cs.ucr.edu_localhost:46  .execooognfPP6  .gstreamer-0.10     
-.DCOPserver_well.cs.ucr.edu_localhost_11  .execoooHh9ebs  .gtk-bookmarks      
-.DCOPserver_well.cs.ucr.edu_localhost_13  .execoooIwHvef  .gtkrc-1.2-gnome2   
-.DCOPserver_well.cs.ucr.edu_localhost_15  .execoooJR2j61  .gvfs               
-.DCOPserver_well.cs.ucr.edu_localhost_19  .execoooLAXAcn  hs_err_pid9250.log  
-.DCOPserver_well.cs.ucr.edu_localhost_29  .execooomQ9U4Y  hs_err_pid9270.log  
-.DCOPserver_well.cs.ucr.edu_localhost_46  .execooonFgLgQ  hs_err_pid9309.log  
-.DCOPserver_well.cs.ucr.edu_NODISPLAY     .execoooNk8vwo  .ICEauthority       
-Desktop                                   .execooonkNDts  idea.cc             
-.dmrc                                     .execoooOq1Yl5  idea.cpp            
-Documents                                 .execoooPH7URm  .imsettings.log     
-Downloads                                 .execooorxqqz3  .kde                
-.eggcups                                  .execooosB9wKN  kepler.cpp          
-.emacs.d                                  .execoootE3t5A  .lesshst            
-.esd_auth                                 .execooouP3ZwI  .local              
-.execooo10pqJO                            .execoooUV7YTQ  .logfactor5         
+./src:
+[32ma.out  [0m[49;0mcomParse.h  [0m[49;0mcp.cpp  [0m[49;0mdigit.cpp  [0m[49;0mdigit.h  [0m[49;0mls.cpp  [0m[49;0mls.h  [0m[49;0mredirect.h  [0m[49;0mrshell.cpp  [0m[49;0mwidthTest.cpp  [0m[49;0m
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ bin/ls ../../ ./runTests ../../../ #3 args
+../../:
+[34mfirstrepo  [0m[49;0m[34mfolder  [0m[49;0m[34mgitgame  [0m[49;0m[32msendspam.sh  [0m[49;0mtutor  [0m[49;0m
 
-..:
-.  ..  a.out  cslabs  .git  main.cpp  README  rshell  ucr-cs100  
+./runTests:
+cd  [0m[49;0m[32mctrlC  [0m[49;0m[32mexecv  [0m[49;0mls  [0m[49;0mtest  [0m[49;0m
 
-..:
-.  ..  a.out  cslabs  .git  main.cpp  README  rshell  ucr-cs100  
+../../../:
+C:\nppdf32Log\debuglog.txt  [0m[49;0m[34mDesktop    [0m[49;0m[32mExercise 2 Lab 1    [0m[49;0mhs_err_pid9270.log  [0m[49;0m[32midea.cpp    [0m[49;0m[34mPictures   [0m[49;0m[34msports       [0m[49;0m
+[34mCS100                       [0m[49;0m[34mDocuments  [0m[49;0mfile                [0m[49;0mhs_err_pid9309.log  [0m[49;0mkepler.cpp  [0m[49;0m[34mPublic     [0m[49;0m[34mTemplates    [0m[49;0m
+[34mCS61                        [0m[49;0m[34mDownloads  [0m[49;0mhs_err_pid9250.log  [0m[49;0m[32midea.cc             [0m[49;0m[34mMusic       [0m[49;0mscript.rb  [0m[49;0mtheseus.cpp  [0m[49;0m
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ ##arguments and flags
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ bin/ls -a ../
+[34m.  [0m[49;0m[34m..  [0m[49;0m[32ma.out  [0m[49;0m[34mcslabs  [0m[49;0mfile  [0m[49;0m[34m.git  [0m[49;0mhandle_signals.cpp  [0m[49;0mmain.cpp  [0m[49;0mREADME  [0m[49;0m[34mrshell  [0m[49;0m[34mucr-cs100  [0m[49;0m
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ bin/ls ../ -l
+-rwx------ dhand002 csmajs 8288 Jan 12 11:17[32m a.out
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Jan 29 12:40[34m cslabs
+[0m[49;0m-rw------- dhand002 csmajs   23 Mar  8 21:28 file
+[0m[49;0m-rw-r--r-- dhand002 csmajs  755 Feb 23 12:24 handle_signals.cpp
+[0m[49;0m-rw------- dhand002 csmajs  188 Jan 12 11:50 main.cpp
+[0m[49;0m-rw------- dhand002 csmajs   22 Jan 12 11:51 README
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Mar  9 17:49[34m rshell
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Jan 12 12:02[34m ucr-cs100
+[0m[49;0m/home/csmajs/dhand002/CS100/firstrepo/rshell $ bin/ls ../ -a -l #multiple flag, 1 arg
+drwx------ dhand002 csmajs 4096 Mar  8 21:28[34m .
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Mar  9 13:27[34m ..
+[0m[49;0m-rwx------ dhand002 csmajs 8288 Jan 12 11:17[32m a.out
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Jan 29 12:40[34m cslabs
+[0m[49;0m-rw------- dhand002 csmajs   23 Mar  8 21:28 file
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Jan 14 08:07[34m .git
+[0m[49;0m-rw-r--r-- dhand002 csmajs  755 Feb 23 12:24 handle_signals.cpp
+[0m[49;0m-rw------- dhand002 csmajs  188 Jan 12 11:50 main.cpp
+[0m[49;0m-rw------- dhand002 csmajs   22 Jan 12 11:51 README
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Mar  9 17:49[34m rshell
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Jan 12 12:02[34m ucr-cs100
+[0m[49;0m/home/csmajs/dhand002/CS100/firstrepo/rshell $ bin/ls -a ../ -l #multiple flag, 1 arg
+drwx------ dhand002 csmajs 4096 Mar  8 21:28[34m .
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Mar  9 13:27[34m ..
+[0m[49;0m-rwx------ dhand002 csmajs 8288 Jan 12 11:17[32m a.out
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Jan 29 12:40[34m cslabs
+[0m[49;0m-rw------- dhand002 csmajs   23 Mar  8 21:28 file
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Jan 14 08:07[34m .git
+[0m[49;0m-rw-r--r-- dhand002 csmajs  755 Feb 23 12:24 handle_signals.cpp
+[0m[49;0m-rw------- dhand002 csmajs  188 Jan 12 11:50 main.cpp
+[0m[49;0m-rw------- dhand002 csmajs   22 Jan 12 11:51 README
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Mar  9 17:49[34m rshell
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Jan 12 12:02[34m ucr-cs100
+[0m[49;0m/home/csmajs/dhand002/CS100/firstrepo/rshell $ bin/ls -l ../ runTests #1 flag, multiple arg
+../:
+-rwx------ dhand002 csmajs 8288 Jan 12 11:17[32m a.out
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Jan 29 12:40[34m cslabs
+[0m[49;0m-rw------- dhand002 csmajs   23 Mar  8 21:28 file
+[0m[49;0m-rw-r--r-- dhand002 csmajs  755 Feb 23 12:24 handle_signals.cpp
+[0m[49;0m-rw------- dhand002 csmajs  188 Jan 12 11:50 main.cpp
+[0m[49;0m-rw------- dhand002 csmajs   22 Jan 12 11:51 README
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Mar  9 17:49[34m rshell
+[0m[49;0mdrwx------ dhand002 csmajs 4096 Jan 12 12:02[34m ucr-cs100
+[0m[49;0m
+runTests:
+-rw------- dhand002 csmajs 1014 Mar  8 19:20 cd
+[0m[49;0m-rwx------ dhand002 csmajs   97 Mar  8 19:41[32m ctrlC
+[0m[49;0m-rwx--x--x dhand002 csmajs  135 Mar  8 21:43[32m execv
+[0m[49;0m-rw------- dhand002 csmajs  601 Mar  9 17:56 ls
+[0m[49;0m-rw------- dhand002 csmajs   11 Mar  8 20:09 test
+[0m[49;0m/home/csmajs/dhand002/CS100/firstrepo/rshell $ ##bad arg
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #bin/ls djlfk
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #bin/ls ldklsjfl djlfk #mult arg
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ #bin/ls dkljfs -a #with flag
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ 
+/home/csmajs/dhand002/CS100/firstrepo/rshell $ exit
 
-..:
-.  ..  a.out  cslabs  .git  main.cpp  README  rshell  ucr-cs100  
+================================================================================
+[s%%%%%%%%%%[u[0;32mdhand002[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/firstrepo/rshell[0;95m (ls) [0;36m$[0m exit
+exit
 ~/CS100/firstrepo/rshell
-dhand002@hammer $ bin/ls -a ../ucr-cs100/ . ~/ .. .. ..[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kl ../us[Kcr-cs100/
-stat: No such file or directory
-~/CS100/firstrepo/rshell
-dhand002@hammer $ bin/ls -l ../ucr-cs100/[C[C[1P ../ucr-cs100/R ../ucr-cs100/
-ls: invalid option -- 'R'
-Try 'ls --help' for more information.
-~/CS100/firstrepo/rshell
-dhand002@hammer $ bin/ls -R ../ucr-cs100/[1P ../ucr-cs100/a ../ucr-cs100/
-.   assignments  .gitignore  .gitmodules    LICENSE  README.md  
-..  .git         gitlearn    lecture-notes  people   textbook   
-~/CS100/firstrepo/rshell
-dhand002@hammer $ exxit[K[K[Kit
+dhand002@hammer $ exit
 exit
 
-Script done on Mon 09 Feb 2015 12:12:29 AM PST
+Script done on Mon 09 Mar 2015 06:03:06 PM PDT
